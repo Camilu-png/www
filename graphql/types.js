@@ -1,4 +1,4 @@
-const { GraphQLObjectType, GraphQLID, GraphQLString } = require("graphql");
+const { GraphQLObjectType, GraphQLID, GraphQLString, GraphQLInputObjectType, GraphQLBoolean } = require("graphql");
 
 const DoctorType = new GraphQLObjectType({
     name: "DoctorType",
@@ -18,10 +18,22 @@ const DoctorType = new GraphQLObjectType({
                     dir: {type: GraphQLString}
                 }
             }),
-        }
+        },
+        agendaId:{ type: GraphQLString }
     }
-})
+});
+
+const AgendaInputType = new GraphQLInputObjectType({
+  name: 'AgendaInput',
+  description: 'Input type for creating an agenda',
+  fields: () => ({
+    day: { type: GraphQLString },
+    rangoHoras: { type: GraphQLString },
+    disponible: { type: GraphQLBoolean }
+  })
+});
+
 
 module.exports ={
-    DoctorType,
+    DoctorType, AgendaInputType
 }

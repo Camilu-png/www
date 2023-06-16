@@ -29,10 +29,9 @@ const doctorSchema = new Schema({
             type: String, required: true
         }
     },
-    horarios: [{
-        type: Schema.Types.ObjectId,
-        ref: 'Horario'
-    }]
+    agendaId:{
+        type: String,
+    }
 
 });
 

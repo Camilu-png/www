@@ -1,5 +1,6 @@
-const { GraphQLString } = require("graphql");
-const { Doctor, Patient } = require("../models");
+const { GraphQLString, GraphQLBoolean, GraphQLList, GraphQLID } = require("graphql");
+const { Doctor, Patient, Agenda } = require("../models");
+const { DoctorType ,AgendaInputType } = require("./types");
 
 const createDoc = {
     type: GraphQLString,
@@ -23,6 +24,26 @@ const createDoc = {
     }
 };
 
+const updateDoctor = {
+    type: DoctorType,
+    description: "Update Doctor",
+    args:{
+        id:{type: GraphQLID},
+        agendaId: {type: GraphQLString }  
+    },
+    async resolve(_, {id, agendaId}){
+        const updateDoctor = await Doctor.findOneAndUpdate(
+            {_id: id,},
+            {
+                agendaId,
+            },
+            { new: true }
+        )
+        return {}
+    }
+
+}
+
 const createPatient = {
     type: GraphQLString,
     description: "Create a new patient",
@@ -40,6 +61,32 @@ const createPatient = {
         return "new Patient created";
     }
 };
+
+const createAgenda = {
+    type: GraphQLString,
+    description: "Create a new agenda",
+    args: {
+      agenda: { type: new GraphQLList(AgendaInputType) }
+    },
+    async resolve(_, args) {
+      const { agenda } = args;
+
+      try {
+        // Crea las nuevas entradas de agenda
+        const createdAgendas = new Agenda({agenda});
+        /* await createdAgendas.save() */
+        if (!createdAgendas) {
+          throw new Error("Error al crear las agendas");
+        }
+        await createdAgendas.save();
+        return "Nuevas agendas creadas";
+      } catch (error) {
+        console.error(error);
+        throw new Error("Error al crear las agendas");
+      }
+    }
+  };
+
 /* const setDisponibles = {
     type: GraphQLString,
     description: "Set the avaible hours of the doctors",
@@ -53,5 +100,5 @@ const createPatient = {
 
 }; */
 module.exports = {
-    createDoc, createPatient
+    createDoc, createPatient, createAgenda, updateDoctor
 };

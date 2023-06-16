@@ -1,6 +1,7 @@
 const { GraphQLSchema, GraphQLObjectType, GraphQLString } = require('graphql');
 const { doctors, doctor } = require('./queries')
-const { createDoc, createPatient } = require('./mutations')
+const { createDoc, createPatient, createAgenda, updateDoctor } = require('./mutations')
+
 const QueryType = new GraphQLObjectType({
     name: "QueryType",
     description: 'The root query type',
@@ -13,7 +14,7 @@ const MutationType = new GraphQLObjectType({
     name: "MutationType",
     description: "The root mutation type",
     fields: {
-        createDoc, createPatient
+        createDoc, createPatient, createAgenda, updateDoctor
     },
 });
 
