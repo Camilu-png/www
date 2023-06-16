@@ -1,11 +1,11 @@
 const { GraphQLSchema, GraphQLObjectType, GraphQLString } = require('graphql');
-const { hello } = require('./queries')
+const { doctors, doctor } = require('./queries')
 const { createDoc, createPatient } = require('./mutations')
 const QueryType = new GraphQLObjectType({
     name: "QueryType",
     description: 'The root query type',
     fields: {
-        hello,
+        doctors, doctor
     }
 });
 
