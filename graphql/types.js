@@ -10,10 +10,14 @@ const DoctorType = new GraphQLObjectType({
         email: { type: GraphQLString },
         rut: { type: GraphQLString },
         speciality: { type: GraphQLString },
-        centro: {
-            type: GraphQLString,
-            /* name_center: { type: GraphQLString },
-            dir: { type: GraphQLString } */
+        center: {
+            type: new GraphQLObjectType({
+                name:"CentroType",
+                fields:{
+                    name_center: {type: GraphQLString},
+                    dir: {type: GraphQLString}
+                }
+            }),
         }
     }
 })
