@@ -3,8 +3,10 @@ const { Router } = require("express");
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
+const bodyParser = require("body-parser");
 
 const router = Router();
+const SECRET = process.env.SECRET || "secret";
 
 User.create({
   name: "admin",
@@ -20,9 +22,10 @@ User.create({
   type: "doctor",
 });
 
+router.use(bodyParser.json());
+
 router.post("/signup", async (req, res) => {
   try {
-    req.body.password = await bcrypt.hash(req.body.password, 10);
     res.json(await User.create(req.body));
   } catch (error) {
     res.status(400).json({ error });
@@ -31,8 +34,7 @@ router.post("/signup", async (req, res) => {
 
 router.post("/login", async (req, res) => {
   try {
-    console.log(req.body);
-    const user = await User.findOne({ username: req.body.username });
+    const user = await User.findOne({ email: req.body.username });
     if (user) {
       const result = req.body.password === user.password;
       if (result) {
