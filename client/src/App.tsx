@@ -11,7 +11,6 @@ function Login(props: {
   setUsername: any;
   setPassword: any;
 }) {
-  const { setScreen } = props;
   const [login, setLogin] = useState(false);
 
   useEffect(() => {
@@ -100,7 +99,7 @@ function View(props: { screen: string; setScreen: any }) {
   // TODO: Get data from server
   const getData = async () => {
     try {
-      const res = await axios.get("/graphql"); // FIXME: Not working (change endpoint and add the query)
+      const res = await axios.get("http://localhost:4000/graphql"); // FIXME: Not working (change endpoint and add the query)
       console.log(res.data);
       setData(res.data);
     } catch (e) {
