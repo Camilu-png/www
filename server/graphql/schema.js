@@ -1,5 +1,5 @@
-const { GraphQLSchema, GraphQLObjectType, GraphQLString } = require("graphql");
-const { doctors, doctor } = require("./queries");
+const { GraphQLSchema, GraphQLObjectType } = require("graphql");
+const { doctors, doctor, login } = require("./queries");
 const {
   createDoc,
   createPatient,
@@ -13,6 +13,7 @@ const QueryType = new GraphQLObjectType({
   fields: {
     doctors,
     doctor,
+    login,
   },
 });
 

@@ -7,6 +7,22 @@ const {
 const { Doctor, Patient, Agenda } = require("../models");
 const { DoctorType, AgendaInputType } = require("./types");
 
+const createUser = {
+  type: GraphQLString,
+  description: "Create a new user",
+  args: {
+    name: { type: GraphQLString },
+    email: { type: GraphQLString },
+    password: { type: GraphQLString },
+    type: { type: GraphQLString },
+  },
+  async resolve(_, args) {
+    const newUser = new User(args);
+    await newUser.save();
+    return "new User created";
+  },
+};
+
 const createDoc = {
   type: GraphQLString,
   description: "Create a new doctor",
@@ -111,6 +127,7 @@ const createAgenda = {
 
 }; */
 module.exports = {
+  createUser,
   createDoc,
   createPatient,
   createAgenda,

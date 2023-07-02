@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
-
 import "./App.css";
 
 function Login(props: {
@@ -12,15 +11,19 @@ function Login(props: {
   setPassword: any;
 }) {
   const [login, setLogin] = useState(false);
-
   useEffect(() => {
     const auth = async () => {
+      const data = {
+        username: props.username,
+        password: props.password,
+      };
       await axios
-        .get("http://localhost:4000/authenticate", {
-          auth: { username: props.username, password: props.password },
-        })
+        .post("http://localhost:4000/user/login", data)
         .then((res) => {
-          props.setScreen(res.data.screen);
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${res.data.token}`;
+          props.setScreen("view");
           console.log(res.data);
         })
         .catch((err) => {
@@ -30,11 +33,12 @@ function Login(props: {
     if (login) {
       auth();
     }
-  }, [login]);
+  }, [login, props]);
 
   return (
     <div className="col-12 d-flex justify-content-center">
       <div className="col-5 p-5 d-flex flex-column">
+        const [data, setData] = useState();
         <form
           data-np-autofill-type="identity"
           data-np-checked="1"
@@ -82,38 +86,45 @@ function Login(props: {
   );
 }
 
-function View(props: { screen: string; setScreen: any }) {
-  const { screen, setScreen } = props;
-
-  const [data, setData] = useState();
-
-  const deleteCookie = async () => {
-    try {
-      await axios.get("/clear-cookie"); // FIXME: Not working (change endpoint)
-      setScreen("auth");
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  // TODO: Get data from server
-  const getData = async () => {
-    try {
-      const res = await axios.get("http://localhost:4000/graphql"); // FIXME: Not working (change endpoint and add the query)
-      console.log(res.data);
-      setData(res.data);
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
+function ViewDoctor(props: { setLogout: any; setScreen: any }) {
   return (
     <div>
-      <p>{screen}</p>
-      <p>{data}</p>
-      <button onClick={getData}>Get Data</button>
-      <button onClick={deleteCookie}>Logout</button>
+      <p>Doctor</p>
     </div>
+  );
+}
+
+function ViewPatient(props: { setLogout: any; setScreen: any }) {
+  return (
+    <div>
+      <p>Patient</p>
+    </div>
+  );
+}
+
+function ViewSecretary(props: { setLogout: any; setScreen: any }) {
+  return (
+    <div>
+      <p>Secretary</p>
+    </div>
+  );
+}
+
+function View(props: { screen: string; setScreen: any }) {
+  const { screen, setScreen } = props;
+  const [logout, setLogout] = useState(false);
+  const user_type = "doctor"; // FIXME: Get user type from server
+
+  return (
+    <>
+      {user_type === "doctor" ? (
+        <ViewDoctor setLogout={setLogout} setScreen={setScreen} />
+      ) : user_type === "patient" ? (
+        <ViewPatient setLogout={setLogout} setScreen={setScreen} />
+      ) : (
+        <ViewSecretary setLogout={setLogout} setScreen={setScreen} />
+      )}
+    </>
   );
 }
 

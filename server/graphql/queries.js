@@ -1,6 +1,17 @@
 const { GraphQLString, GraphQLList, GraphQLID } = require("graphql");
 const { DoctorType } = require("./types");
-const { Doctor } = require("../models");
+const { Doctor, User } = require("../models");
+
+const login = {
+  type: GraphQLString,
+  resolver: async (_, args) => {
+    const user = await User.findOne({
+      email: args.email,
+      password: args.password,
+    });
+    return !user ? null : user.type;
+  },
+};
 
 const doctors = {
   type: new GraphQLList(DoctorType),
@@ -22,4 +33,4 @@ const doctor = {
   },
 };
 
-module.exports = { doctors, doctor };
+module.exports = { doctors, doctor, login };
