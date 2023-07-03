@@ -2,6 +2,10 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
+import ViewSecretary from "./ViewSecreraty";
+import ViewDoctor from "./ViewDoctor";
+import ViewPatient from "./ViewPatient";
+import Navbar from "./NavBar";
 
 function Login(props: {
   username: string;
@@ -9,8 +13,11 @@ function Login(props: {
   setScreen: any;
   setUsername: any;
   setPassword: any;
+  user: any,
+  setUser:any,
 }) {
   const [login, setLogin] = useState(false);
+  
   useEffect(() => {
     const auth = async () => {
       const data = {
@@ -24,7 +31,7 @@ function Login(props: {
             "Authorization"
           ] = `Bearer ${res.data.token}`;
           props.setScreen("view");
-          console.log(res.data);
+          props.setUser(res.data.user);
         })
         .catch((err) => {
           console.log(err);
@@ -38,7 +45,6 @@ function Login(props: {
   return (
     <div className="col-12 d-flex justify-content-center">
       <div className="col-5 p-5 d-flex flex-column">
-        const [data, setData] = useState();
         <form
           data-np-autofill-type="identity"
           data-np-checked="1"
@@ -86,43 +92,18 @@ function Login(props: {
   );
 }
 
-function ViewDoctor(props: { setLogout: any; setScreen: any }) {
-  return (
-    <div>
-      <p>Doctor</p>
-    </div>
-  );
-}
-
-function ViewPatient(props: { setLogout: any; setScreen: any }) {
-  return (
-    <div>
-      <p>Patient</p>
-    </div>
-  );
-}
-
-function ViewSecretary(props: { setLogout: any; setScreen: any }) {
-  return (
-    <div>
-      <p>Secretary</p>
-    </div>
-  );
-}
-
-function View(props: { screen: string; setScreen: any }) {
+function View(props: { screen: string; setScreen: any, user:any, setUser:any }) {
   const { screen, setScreen } = props;
   const [logout, setLogout] = useState(false);
-  const user_type = "doctor"; // FIXME: Get user type from server
 
   return (
     <>
-      {user_type === "doctor" ? (
-        <ViewDoctor setLogout={setLogout} setScreen={setScreen} />
-      ) : user_type === "patient" ? (
-        <ViewPatient setLogout={setLogout} setScreen={setScreen} />
+      {props.user.type === "doctor" ? (
+        <ViewDoctor setLogout={setLogout} setScreen={setScreen} user={props.user} />
+      ) : props.user.type === "patient" ? (
+        <ViewPatient setLogout={setLogout} setScreen={setScreen} user={props.user} />
       ) : (
-        <ViewSecretary setLogout={setLogout} setScreen={setScreen} />
+        <ViewSecretary setLogout={setLogout} setScreen={setScreen} user={props.user} />
       )}
     </>
   );
@@ -132,6 +113,7 @@ function App() {
   const [username, setUsername] = React.useState("");
   const [password, setPassword] = React.useState("");
   const [screen, setScreen] = React.useState("auth");
+  const [user, setUser] = useState({});
 
   return (
     <div className="App">
@@ -142,9 +124,15 @@ function App() {
           setScreen={setScreen}
           setUsername={setUsername}
           setPassword={setPassword}
+          user={user}
+          setUser={setUser}
         />
       ) : (
-        <View screen={screen} setScreen={setScreen} />
+        <div>
+          <Navbar type={user}/>
+          <View screen={screen} setScreen={setScreen} user={user} setUser={setUser}/>
+        </div>
+        
       )}
     </div>
   );

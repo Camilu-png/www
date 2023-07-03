@@ -8,7 +8,7 @@ const bodyParser = require("body-parser");
 const router = Router();
 const SECRET = process.env.SECRET || "secret";
 
-User.create({
+/* User.create({
   name: "admin",
   password: "admin",
   email: "admin@email.com",
@@ -20,7 +20,14 @@ User.create({
   password: "zimi",
   email: "zimi@email.com",
   type: "doctor",
-});
+}); */
+
+/* User.create({
+  name: "pepito",
+  password: "pepito",
+  email: "pepito@email.com",
+  type: "patient",
+}); */
 
 router.use(bodyParser.json());
 
@@ -35,11 +42,12 @@ router.post("/signup", async (req, res) => {
 router.post("/login", async (req, res) => {
   try {
     const user = await User.findOne({ email: req.body.username });
+    console.log(user)
     if (user) {
       const result = req.body.password === user.password;
       if (result) {
         const token = await jwt.sign({ username: user.username }, SECRET);
-        res.json({ token });
+        res.json({ token:token, user:user });
       } else {
         res.status(400).json({ error: "password doesn't match" });
       }
