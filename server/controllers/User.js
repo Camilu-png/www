@@ -29,6 +29,13 @@ User.create({
   type: "patient",
 }); */
 
+/* User.create({
+  name: "juanita",
+  password: "juanita",
+  email: "juanita@email.com",
+  type: "secretary",
+});  */
+
 router.use(bodyParser.json());
 
 router.post("/signup", async (req, res) => {

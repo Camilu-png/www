@@ -24,7 +24,6 @@ function NavBar(props:{type:any}) {
                         <Nav.Link as={Link} to="/esperaSecretaria">Espera</Nav.Link>
                         <Nav.Link as={Link} to="/disponibilidad">Disponibilidad</Nav.Link>
                         <Nav.Link as={Link} to="/HorasSecretaria">Tomar reservadas</Nav.Link>
-                        <Nav.Link as={Link} to="/recaudacion">Recaudación</Nav.Link>
                     </Nav>
                 )}
             </Container>

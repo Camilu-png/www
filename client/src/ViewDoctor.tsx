@@ -6,7 +6,8 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
 
     const [patients, setPatients] = useState([{
         "nombre": "pepito",
-        "hora": "9:30"
+        "hora": "9:30",
+        "attended": false,
     }]);
     const [doctor, setDoctor] = useState(props.user);
 
@@ -32,7 +33,7 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
             await axios
             .put("http://localhost:4000/doctor/patientAttended", obj)
             .then((res) => {
-            
+                
             })
             .catch((err) => {
             console.log(err);
@@ -59,8 +60,9 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
                         <td>{item.hora}</td>
                         <td>
                             {
+                                
                                 <a>
-                                    <Button onClick={(e) => handleAtencion(e,item)}>Atendido</Button>
+                                    <Button onClick={(e) => handleAtencion(e,item)}>{(item.attended) ? "Atendido" : "Sin atender"}</Button>
                                 </a>
                             }
                         </td>
@@ -68,7 +70,7 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
                 ))}
                 
                 </tbody>
-                </Table>
+            </Table>
         </div>
     );
 }
