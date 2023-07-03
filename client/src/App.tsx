@@ -101,12 +101,10 @@ function View(props: { screen: string; setScreen: any, user:any, setUser:any }) 
         <BrowserRouter>
           <Navigate to="/esperaDoctor" />
         </BrowserRouter>
-        
       ) : props.user.type === "patient" ? (
         <BrowserRouter>
           <Navigate to="/Tomarhoras" />
         </BrowserRouter>
-        
       ) : (
         <BrowserRouter>
           <Navigate to="/esperaSecretaria" />
