@@ -1,7 +1,7 @@
 function ViewDoctor(props: { setLogout: any; setScreen: any,user: any }) {  
     return (
         <div>
-            <p>Doctor</p>
+            <p>Doctor aaaaa</p>
         </div>
     );
   }

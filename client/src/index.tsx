@@ -15,11 +15,10 @@ const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 root.render(
-  <BrowserRouter>
+  
     <ApolloProvider client={client}>
       <App />
     </ApolloProvider>
-  </BrowserRouter>
   
 );
 
