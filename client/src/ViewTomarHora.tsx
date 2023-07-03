@@ -1,62 +1,49 @@
 import React, { useState } from "react";
 import { Outlet, Link } from "react-router-dom";
 import {Container, Nav, Navbar} from 'react-bootstrap';
-
+import axios from "axios";
 import "./TomarHora.css";
 
-const especialidades = [
-  {
-    especialidad: "Otorrinolaringología",
-    elementos: [
-      {
-        centro: "Centro 1",
-        direccion: "Dirección 1",
-      },
-      {
-        centro: "Centro 2",
-        direccion: "Dirección 2",
-      },
-      {
-        centro: "Centro 3",
-        direccion: "Dirección 3",
-      },
-    ],
-  },
-  {
-    especialidad: "Medico general",
-    elementos: [
-      {
-        centro: "Centro 6",
-        direccion: "Dirección medico 1",
-      },
-      {
-        centro: "Centro 2",
-        direccion: "Dirección 2",
-      },
-      {
-        centro: "Centro 3",
-        direccion: "Dirección 3",
-      },
-    ],
-  },
-  {
-    especialidad: "Kine",
-    elementos: [
-      {
-        centro: "Centro 6",
-        direccion: "Dirección medico 1",
-      },
-    ],
-  },
 
-  // Otros elementos de especialidades
-];
+
+
+interface Especialidad {
+  especialidad: string;
+  elementos: {
+    centro: string;
+    direccion: string;
+  }[];
+}
+
 
 function ViewTomarHora(props: {
   setLogout: any;
   setScreen: any;
   username: string;
 }) {
+  const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
+  useEffect(() => {
+    const getPatients = async() =>{
+        await axios
+        .get("http://localhost:4000/speciality")
+        .then((res) => {
+           const especialidadesData = res.data.map((item: any) => ({
+          especialidad: item.name,
+          elementos: item.centro.map((centro: any) => ({
+            centro: centro.name,
+            direccion: centro.dir
+          }))
+        }));
+            setEspecialidades(especialidadesData);
+            console.log(especialidadesData)
+        })
+        .catch((err) => {
+        console.log(err);
+        });
+    }
+    getPatients();
+},[]);
+  
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
   const toggleAccordion = (index: number) => {
