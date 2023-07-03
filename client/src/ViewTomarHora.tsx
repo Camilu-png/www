@@ -1,4 +1,6 @@
 import React, { useState } from "react";
+import { Outlet, Link } from "react-router-dom";
+import {Container, Nav, Navbar} from 'react-bootstrap';
 
 import "./TomarHora.css";
 
@@ -61,10 +63,6 @@ function ViewTomarHora(props: {
     setActiveAccordion((prevIndex) => (prevIndex === index ? null : index));
   };
 
-  const handleSearchClick = (event: React.MouseEvent<HTMLAnchorElement>) => {
-    event.preventDefault();
-    window.location.href = "./elegir_medico.html";
-  };
   return (
     <>
       <div className="container-fluid">
@@ -106,13 +104,7 @@ function ViewTomarHora(props: {
                   <li key={subIndex}>
                     <div className="centro">{elemento.centro}</div>
                     <div className="direccion">{elemento.direccion}</div>
-                    <a
-                      href="#"
-                      className="icono buscar"
-                      onClick={handleSearchClick}
-                    >
-                      <i className="fas fa-search"></i>
-                    </a>
+                    <Nav.Link className="icono buscar" as={Link} to="/ElegirMedico"></Nav.Link>
                   </li>
                 ))}
               </ul>
