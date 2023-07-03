@@ -1,5 +1,6 @@
 const Doctor = require('../models/Doctor');
-
+const jwt = require("jsonwebtoken");
+const SECRET = process.env.SECRET || "secret";
 // Obtener todos los médicos
 exports.getDoctors = async (req, res) => {
   try {
@@ -10,7 +11,22 @@ exports.getDoctors = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener los médicos' });
   }
 };
+// Obtener doctores por especialidad y centro
+exports.getDoctorsBySpecialityAndCenter = async (req, res) => {
+  const { speciality, center } = req.params;
+  console.log(speciality, center)
 
+  try {
+    const doctors = await Doctor.find({
+      speciality: speciality,
+      center: center,
+    }).select('_id rut speciality center availability');
+
+    res.status(200).json(doctors);
+  } catch (error) {
+    res.status(500).json({ error: 'Error al obtener los doctores' });
+  }
+};
 // Obtener un médico por ID
 exports.getDoctorById = async (req, res) => {
   const { id } = req.params;
@@ -25,6 +41,7 @@ exports.getDoctorById = async (req, res) => {
     res.status(500).json({ error: 'Error al obtener el médico' });
   }
 };
+
 // Obtener el calendario de un médico por ID
 exports.getDoctorCalendarById = async (req, res) => {
     const { id } = req.params;

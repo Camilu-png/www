@@ -10,14 +10,8 @@ const doctorSchema = new Schema({
     required: true,
   },
   center: {
-    name_center: {
-      type: String,
-      required: true,
-    },
-    dir: {
-      type: String,
-      required: true,
-    },
+    type: String,
+    required: true,
   },
   availability: [{
     day: String,

@@ -1,4 +1,4 @@
-const { Schema, model, mongoose } = require("mongoose");
+const { Schema, model } = require("mongoose");
 
 const specialitySchema = new Schema({
   name: {
@@ -6,7 +6,16 @@ const specialitySchema = new Schema({
     required: true,
   },
   centro: {
-    type: [{ String, String }],
+    type: [{
+      name: {
+        type: String,
+        required: true,
+      },
+      dir: {
+        type: String,
+        required: true,
+      },
+    }],
     required: true,
   },
 });
