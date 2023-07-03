@@ -1,14 +1,6 @@
 const { Schema, model, mongoose } = require("mongoose");
 
 const doctorSchema = new Schema({
-  name: {
-    type: String,
-    required: true,
-  },
-  email: {
-    type: String,
-    required: true,
-  },
   rut: {
     type: String,
     required: true,
@@ -27,9 +19,21 @@ const doctorSchema = new Schema({
       required: true,
     },
   },
-  agendaId: {
+  availability: [{
+    day: String,
+    startTime: String,
+    endTime: String,
+  }],
+  calendar: [{
+    date: String,
+    availability: [{
+      startTime: String,
+      endTime: String,
+    }]
+  }],
+  agendaId: [{
     type: String,
-  },
+  }],
 });
 
 module.exports = model("Doctor", doctorSchema);
