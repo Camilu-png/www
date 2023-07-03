@@ -44,13 +44,15 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
 
     return (
         <div>
-            <h1>Pacientes en espera</h1>
-            <Table striped bordered hover>
+            <h1 className="d-flex justify-content-start" style={{ color: '#4d76b1', marginLeft: '20px'}}>Pacientes en espera</h1>
+            
+            <hr className="mt-2 mb-3"  style={{ marginLeft: '20px', marginRight:'20px' }}/>
+            <Table striped bordered hover style={{ marginLeft: '20px', marginRight:'20px' }}>
                 <thead>
                     <tr>
-                    <th>Paciente</th>
-                    <th>Hora</th>
-                    <th>Atención</th>
+                        <th>Paciente</th>
+                        <th>Hora</th>
+                        <th>Atención</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -60,7 +62,6 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
                         <td>{item.hora}</td>
                         <td>
                             {
-                                
                                 <a>
                                     <Button onClick={(e) => handleAtencion(e,item)}>{(item.attended) ? "Atendido" : "Sin atender"}</Button>
                                 </a>

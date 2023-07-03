@@ -10,6 +10,7 @@ import Navbar from "./NavBar";
 import Espera from "./Espera";
 import ViewTomarHora from "./ViewTomarHora";
 import DoctorForm from "./components/DoctorForm";
+import ViewHorasReservadas from "./ViewHorasReservadas";
 
 function Login(props: {
   username: string;
@@ -151,30 +152,12 @@ function App() {
                 {/* Rutas Doctor */}
                 <Route path="esperaDoctor" element={<ViewDoctor setLogout={setLogout} setScreen={setScreen} user={user} />}/>
                 {/* Rutas Paciente */}
-                <Route
-                  path="Tomarhoras"
-                  element={
-                    <ViewTomarHora
-                      setLogout={setLogout}
-                      setScreen={setScreen}
-                      username={username}
-                    />
-                  }
-                />
-                <Route
-                  path="HorasReservadas"
-                  element={
-                    <ViewPatient
-                      setLogout={setLogout}
-                      setScreen={setScreen}
-                      username={username}
-                    />
-                  }
-                />
+                <Route path="Tomarhoras" element={<ViewTomarHora setLogout={setLogout} setScreen={setScreen} username={username} />}/>
+                <Route path="HorasReservadas" element={<ViewPatient setLogout={setLogout} setScreen={setScreen} username={username} />}/>
                 {/* Rutas Secretaria */}
                 <Route path="esperaSecretaria" element={<ViewSecretary setLogout={setLogout} setScreen={setScreen} user={user} />}/>
                 <Route path="disponibilidad" element={<DoctorForm/>}/>
-                <Route path="HorasSecretaria" element={<Espera/>}/>
+                <Route path="HorasSecretaria" element={<ViewHorasReservadas/>}/>
                 <Route path="recaudacion" element={<Espera/>}/>
                 
                 <Route path="*" element={<Navigate replace to="/"/>}/>
@@ -188,3 +171,5 @@ function App() {
 }
 
 export default App;
+
+          

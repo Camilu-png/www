@@ -1,4 +1,4 @@
-import {Container, Nav, Navbar} from 'react-bootstrap';
+import {Container, Nav, Navbar, Modal } from 'react-bootstrap';
 import { Outlet, Link } from "react-router-dom"
 
 function NavBar(props:{type:any}) {
@@ -23,7 +23,7 @@ function NavBar(props:{type:any}) {
                         <Navbar.Brand as={Link} to="/esperaSecretaria">Centro médico galenos</Navbar.Brand>
                         <Nav.Link as={Link} to="/esperaSecretaria">Espera</Nav.Link>
                         <Nav.Link as={Link} to="/disponibilidad">Disponibilidad</Nav.Link>
-                        <Nav.Link as={Link} to="/HorasSecretaria">Tomar reservadas</Nav.Link>
+                        <Nav.Link as={Link} to="/HorasSecretaria">Horas reservadas</Nav.Link>
                     </Nav>
                 )}
             </Container>
