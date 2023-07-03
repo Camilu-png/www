@@ -1,6 +1,6 @@
 const { GraphQLString, GraphQLList, GraphQLID } = require("graphql");
-const { DoctorType } = require("./types");
-const { Doctor, User } = require("../models");
+const { DoctorType, PatientType, UserType } = require("./types");
+const { Doctor, User, Patient } = require("../models");
 
 const login = {
   type: GraphQLString,
@@ -33,4 +33,26 @@ const doctor = {
   },
 };
 
-module.exports = { doctors, doctor, login };
+const patientByEmail = {
+  type: PatientType,
+  description: "get a patient by email",
+  args: {
+    email: { type: GraphQLString },
+  },
+  resolve(_, args) {
+    return Patient.findOne({ email: args.email });
+  },
+};
+
+const userByEmail = {
+  type: UserType,
+  description: "get a user by email",
+  args: {
+    email: { type: GraphQLString },
+  },
+  resolve(_, args) {
+    return User.findOne({ email: args.email });
+  },
+};
+
+module.exports = { doctors, doctor, login, patientByEmail, userByEmail };

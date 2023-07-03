@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import axios from "axios";
 import "bootstrap/dist/css/bootstrap.css";
 import "./App.css";
@@ -15,11 +15,11 @@ function Login(props: {
   setScreen: any;
   setUsername: any;
   setPassword: any;
-  user: any,
-  setUser:any,
+  user: any;
+  setUser: any;
 }) {
   const [login, setLogin] = useState(false);
-  
+
   useEffect(() => {
     const auth = async () => {
       const data = {
@@ -94,7 +94,12 @@ function Login(props: {
   );
 }
 
-function View(props: { screen: string; setScreen: any, user:any, setUser:any }) {
+function View(props: {
+  screen: string;
+  setScreen: any;
+  user: any;
+  setUser: any;
+}) {
   return (
     <>
       {props.user.type === "doctor" ? (
@@ -135,23 +140,55 @@ function App() {
         />
       ) : (
         <div>
-          <View screen={screen} setScreen={setScreen} user={user} setUser={setUser}/>
+          <View
+            screen={screen}
+            setScreen={setScreen}
+            user={user}
+            setUser={setUser}
+          />
           {/* Cambiar componentes Esperar por los que correspondan */}
           <BrowserRouter>
             <Routes>
-              <Route path="/" element={<Navbar type={user}/>}>
+              <Route path="/" element={<Navbar type={user} />}>
                 {/* Rutas Doctor */}
-                <Route path="esperaDoctor" element={<ViewDoctor setLogout={setLogout} setScreen={setScreen} user={user} />}/>
+                <Route
+                  path="esperaDoctor"
+                  element={
+                    <ViewDoctor
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      user={user}
+                    />
+                  }
+                />
                 {/* Rutas Paciente */}
-                <Route path="Tomarhoras" element={<ViewPatient setLogout={setLogout} setScreen={setScreen} user={user} />}/>
-                <Route path="HorasReservadas" element={<Espera/>}/>
+                <Route
+                  path="Tomarhoras"
+                  element={
+                    <ViewPatient
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
+                <Route path="HorasReservadas" element={<Espera />} />
                 {/* Rutas Secretaria */}
-                <Route path="esperaSecretaria" element={<ViewSecretary setLogout={setLogout} setScreen={setScreen} user={user} />}/>
-                <Route path="disponibilidad" element={<Espera/>}/>
-                <Route path="HorasSecretaria" element={<Espera/>}/>
-                <Route path="recaudacion" element={<Espera/>}/>
-                
-                <Route path="*" element={<Navigate replace to="/"/>}/>
+                <Route
+                  path="esperaSecretaria"
+                  element={
+                    <ViewSecretary
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      user={user}
+                    />
+                  }
+                />
+                <Route path="disponibilidad" element={<Espera />} />
+                <Route path="HorasSecretaria" element={<Espera />} />
+                <Route path="recaudacion" element={<Espera />} />
+
+                <Route path="*" element={<Navigate replace to="/" />} />
               </Route>
             </Routes>
           </BrowserRouter>
