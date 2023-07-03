@@ -173,7 +173,16 @@ function App() {
                     />
                   }
                 />
-                <Route path="HorasReservadas" element={<ViewPatient />} />
+                <Route
+                  path="HorasReservadas"
+                  element={
+                    <ViewPatient
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
                 {/* Rutas Secretaria */}
                 <Route
                   path="esperaSecretaria"
