@@ -1,11 +1,14 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import DoctorList from './DoctorList';
+import axios from "axios";
 
-const DoctorForm = ({ onSubmit }) => {
+const DoctorForm = () => {
   const [rut, setRut] = useState('');
   const [speciality, setSpeciality] = useState('');
   const [centerName, setCenterName] = useState('');
   const [centerDir, setCenterDir] = useState('');
   const [availability, setAvailability] = useState([]);
+  const [doctors, setDoctors] = useState([])
 
   const handleAddAvailability = () => {
     setAvailability(prevAvailability => [...prevAvailability, { day: '', startTime: '', endTime: '' }]);
@@ -17,12 +20,30 @@ const DoctorForm = ({ onSubmit }) => {
 
   const handleSubmit = event => {
     event.preventDefault();
-    onSubmit({ rut, speciality, centerName, centerDir, availability });
+    //onSubmit({ rut, speciality, centerName, centerDir, availability });
   };
+
+  useEffect(() => {
+    const getDoctors = async() =>{
+        await axios
+        .get("http://localhost:4000/doctor")
+        .then((res) => {
+          console.log(res)
+          if(res.data){
+            setDoctors(res.data)
+          }
+        })
+        .catch((err) => {
+        console.log(err);
+        });
+    }
+    getDoctors();
+});
 
   return (
     <div>
       <h2>Asignar Horarios Disponibles</h2>
+      <DoctorList doctors={doctors}/>
       <form onSubmit={handleSubmit}>
         <div>
           <label>RUT:</label>

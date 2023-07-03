@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const DoctorList = ({ doctors }) => {
+const DoctorList = ({doctors}) => {
   return (
     <div>
       <h2>Lista de Médicos</h2>
-      {doctors.map(doctor => (
+      {(doctors||[]).map(doctor => (
         <div key={doctor._id}>
           <h3>{doctor.rut}</h3>
           <p>Especialidad: {doctor.speciality}</p>

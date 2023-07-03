@@ -51,7 +51,11 @@ const especialidades = [
 ];
 
 
-function ViewTomarHora() {
+function ViewTomarHora(props: {
+  setLogout: any;
+  setScreen: any;
+  username: string;
+}) {
 	const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
   const toggleAccordion = (index: number) => {
