@@ -6,6 +6,7 @@ import "./App.css";
 import ViewSecretary from "./ViewSecreraty";
 import ViewDoctor from "./ViewDoctor";
 import ViewPatient from "./ViewPatient";
+import ViewTomarHora from "./ViewTomarHora";
 import Navbar from "./NavBar";
 import Espera from "./Espera";
 
