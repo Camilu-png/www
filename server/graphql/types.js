@@ -23,6 +23,8 @@ const PatientType = new GraphQLObjectType({
   description: "The patient type",
   fields: {
     id: { type: GraphQLID },
+    name: { type: GraphQLString },
+    password: { type: GraphQLString },
     rut: { type: GraphQLString },
     email: { type: GraphQLString },
   },
