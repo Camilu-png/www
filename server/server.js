@@ -6,6 +6,7 @@ const path = require("path");
 const { connectDB } = require("./db");
 const app = express();
 const UserRouter = require("./controllers/User");
+const DoctorRouter = require("./controllers/Doctor");
 const cors = require("cors");
 const { isLoggedIn } = require("./controllers/middleware");
 
@@ -18,6 +19,7 @@ app.use(
   })
 );
 app.use("/user", UserRouter);
+app.use("/doctor", DoctorRouter);
 app.use(
   "/graphql",
   graphqlHTTP({

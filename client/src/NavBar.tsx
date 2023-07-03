@@ -6,18 +6,21 @@ function NavBar(props:{type:any}) {
     <>
         <Navbar bg="primary" data-bs-theme="dark">
             <Container>
-            <Navbar.Brand as={Link} to="/">Centro médico galenos</Navbar.Brand>
+            
             {props.type.type === "doctor" ? (
                     <Nav className="me-auto">
+                        <Navbar.Brand as={Link} to="/esperaDoctor">Centro médico galenos</Navbar.Brand>
                         <Nav.Link as={Link} to="/esperaDoctor">Espera</Nav.Link>
                     </Nav>
                 ) : props.type.type === "patient" ? (
                     <Nav className="me-auto">
+                        <Navbar.Brand as={Link} to="/Tomarhoras">Centro médico galenos</Navbar.Brand>
                         <Nav.Link as={Link} to="/Tomarhoras">Tomar hora</Nav.Link>
                         <Nav.Link as={Link} to="/HorasReservadas">Horas reservadas</Nav.Link>
                     </Nav>
                 ) : (
                     <Nav className="me-auto">
+                        <Navbar.Brand as={Link} to="/esperaSecretaria">Centro médico galenos</Navbar.Brand>
                         <Nav.Link as={Link} to="/esperaSecretaria">Espera</Nav.Link>
                         <Nav.Link as={Link} to="/disponibilidad">Disponibilidad</Nav.Link>
                         <Nav.Link as={Link} to="/HorasSecretaria">Tomar reservadas</Nav.Link>
