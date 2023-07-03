@@ -165,14 +165,14 @@ function App() {
                 <Route
                   path="Tomarhoras"
                   element={
-                    <ViewPatient
+                    <ViewTomarHora
                       setLogout={setLogout}
                       setScreen={setScreen}
                       username={username}
                     />
                   }
                 />
-                <Route path="HorasReservadas" element={<Espera />} />
+                <Route path="HorasReservadas" element={<ViewPatient />} />
                 {/* Rutas Secretaria */}
                 <Route
                   path="esperaSecretaria"
