@@ -1,5 +1,6 @@
 import React, { useEffect,useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
+import { Nav } from 'react-bootstrap';
 import axios from "axios";
 import "./ElegirMedico.css";
 
@@ -39,7 +40,7 @@ function ViewElegirMedico(props: {
         // Aquí puedes manejar la respuesta de la consulta
         console.log(res.data);
         const medicosData = res.data.map((item:any )=> ({
-          nombre: item.email, direccion: item.center, id:item._id
+          nombre: item.email, direccion: item.center, id:item.id
         }))
             setMedicos(medicosData);
             console.log(medicosData)

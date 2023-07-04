@@ -93,15 +93,15 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
   const confirmar = (fechas: string) => {
     // Construir el objeto con los datos a enviar
     const data = {
-      email: email,
-      emailPaciente:  props.username,
-      fecha: fechas,
+      email_paciente:  props.username,
+      email_doctor: email,
+      date: fechas,
     };
     console.log("la data es")
     console.log(data)
 
     // Realizar la llamada POST de Axios
-    axios.post("http://localhost:4000/", data)
+    axios.post("http://localhost:4000/agenda", data)
       .then((response) => {
         // Manejar la respuesta exitosa
         console.log(response.data);
@@ -220,7 +220,7 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
                     borderRadius: "15px",
                   }}
                 >
-                  Agendar
+                  Cancelar
                 </Button>
                 <Button
                   type="button"

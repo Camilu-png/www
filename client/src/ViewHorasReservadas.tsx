@@ -1,18 +1,31 @@
 import React, { useEffect, useState } from "react";
-import { Table, InputGroup, Form, Button} from 'react-bootstrap';
+import { Table, InputGroup, Form, Button, Modal} from 'react-bootstrap';
 import axios from "axios";
 
 function HorasReservadas() {  
-    const [horas, setHoras] = useState([{
-        "doctor": "pepito",
-        "hora": "9:30",
-        "dia": "10/04/2023",
-    }]);
+    const [horas, setHoras] = useState<{centro:string,hora:string,dia:string,doctor:string,especialidad:string}[]>(
+        [],
+    ); 
     const [patient, setPatient] = useState({
-        "nombre": "Nombre Apellido",
-        "rut":"xx.xxx.xxx-x"
+        nombre: "",
+        rut:""
     });
+    const [show, setShow] = useState(false);
+    const handleClose = () => setShow(false);
+    const handleShow = (item:any) => {
+        setShow(true);
+        setHora(item);
+
+    };
     const [formSearch, setFormSearch] = useState("");
+    const [hora, setHora] = useState<{centro:string,hora:string,dia:string,doctor:string,especialidad:string}>({
+        centro:'',
+        hora:'',
+        dia:'',
+        doctor:'',
+        especialidad:''
+    });
+    
 
     const handleSearch =(e:any) => {
         const getHoras = async() =>{
@@ -35,10 +48,6 @@ function HorasReservadas() {
 
     const handleChange = (e:any) => {
         setFormSearch(e.target.value);
-    }
-
-    const handleDelete = (e:any, item:any) => {
-        console.log("delete " + item);
     }
 
     return (
@@ -79,7 +88,7 @@ function HorasReservadas() {
                         <td>{item.dia}</td>
                         <td>
                             {
-                                <Button onClick={(e) => handleDelete(e, item)}>Eliminar</Button>
+                                <Button onClick={(e) => handleShow(item)}>Eliminar</Button>
                             }
                         </td>
                     </tr>
@@ -87,6 +96,32 @@ function HorasReservadas() {
                 
                 </tbody>
             </Table>
+
+            <Modal show={show} onHide={handleClose}>
+                <Modal.Header>
+                <Modal.Title>Anular Hora</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <p>Centro: {hora.centro}</p>
+                    <p>Especialidad: {hora.especialidad}</p>
+                    <p>Doctor: {hora.doctor}</p>
+                    <p>Fecha: {hora.dia}</p>
+                    <p>Hora: {hora.hora}</p>
+                </Modal.Body>
+                <Modal.Footer className="d-flex justify-content-center">
+                    <Button type="button"
+                            className="btn btn-default"
+                            data-dismiss="modal"
+                            style={{ backgroundColor: '#ff3939', color: '#fff' }}
+                            onClick={handleClose}>  
+                        Cancelar
+                    </Button>
+                    <Button variant="primary" onClick={handleClose}>
+                        Confirmar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+
         </div>
     );
   }

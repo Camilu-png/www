@@ -3,14 +3,14 @@ import { Table, InputGroup, Form, Button} from 'react-bootstrap';
 import axios from "axios";
 
 function Espera(props: { setLogout: any; setScreen: any, user: any}) {  
-    const [patients, setPatients] = useState([{
-        "nombre": "pepito",
-        "hora": "9:30",
-        "dia": "10/04/2023",
-    }]);
-    const [doctor, setDoctor] = useState({
-        "nombre": "Doctor Simi",
+    const [patients, setPatients] = useState<{nombre:string,hora:string,dia:string}[]>(
+        [],
+    ); 
+    
+    const [doctor, setDoctor] = useState<{nombre:string}>({
+        nombre:''
     });
+    
     const [formSearch, setFormSearch] = useState("");
 
     const handleSearch =(e:any) => {

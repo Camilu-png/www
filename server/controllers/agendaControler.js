@@ -8,7 +8,7 @@ const SECRET = process.env.SECRET || "secret";
 // Crear una nueva agenda
 exports.createAgenda = async (req, res) => {
     const { email_paciente, email_doctor, date } = req.body;
-  
+    console.log(email_paciente)
     try {
       const doctor = await Doctor.findOne({ email: email_doctor });
   

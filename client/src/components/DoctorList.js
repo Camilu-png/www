@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 
 const DoctorList = ({doctors}) => {
+
   return (
     <div>
       <h2>Lista de Médicos</h2>
