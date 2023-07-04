@@ -2,9 +2,6 @@ const Doctor = require('../models/Doctor');
 const User = require('../models/User');
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET || "secret";
-const Agenda = require('../models/Agenda');
-const Patient = require('../models/Patient');
-const User = require('../models/User');
 // Obtener todos los médicos
 exports.getDoctors = async (req, res) => {
   try {
@@ -134,37 +131,6 @@ exports.updateAvailability = async (req, res) => {
       res.status(500).json({ error: 'Error al actualizar la disponibilidad y generar el calendario del médico' });
     }
 };
-
-exports.getPacientesSinAtender = async (req, res) => {
-  const { id } = req.params;
-
-  try {
-    const doctor = await Doctor.findById(id);
-
-    if (!doctor) {
-      return res.status(404).json({ error: 'Médico no encontrado' });
-    }
-
-    const agendasSinAtender = await Agenda.find({ _id: { $in: doctor.agendaId }, atencion: false, email_paciente: { $exists: true } });
-    const pacientesSinAtender = [];
-
-    for (const agenda of agendasSinAtender) {
-      const paciente = await Patient.findOne({ email: agenda.email_paciente });
-      if (paciente) {
-        pacientesSinAtender.push({
-          paciente,
-          horario: agenda.date,
-        });
-      }
-    }
-
-    res.json(pacientesSinAtender);
-  } catch (error) {
-    console.error('Error al obtener los pacientes sin atender:', error);
-    res.status(500).json({ error: 'Error al obtener los pacientes sin atender' });
-  }
-};
-
 // Función para generar el calendario a partir de la disponibilidad
 const generateCalendar = (availability) => {
     const calendar = [];
