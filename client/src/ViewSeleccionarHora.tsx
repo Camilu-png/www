@@ -28,8 +28,6 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
   const searchParams = new URLSearchParams(location.search);
   const idMedico = searchParams.get('id') ?? '';
   const email = searchParams.get('email') ?? '';
-  console.log(idMedico)
-  console.log(email)
   const [horasDisponibles, setHora] = useState<Hora[]>([]);
 
 
@@ -53,7 +51,6 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
 
         // Aquí puedes manejar la respuesta de la consulta
         setHora(horasData);
-        console.log(horasData)
       } catch (error) {
         // Aquí puedes manejar los errores de la consulta
         console.log(error);
@@ -93,9 +90,29 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
   const closeModal = () => {
     setShowModal(false);
   };
-  const confirmar = () => {
-    setShowModal(false);
-  };
+  const confirmar = (fechas: string) => {
+    // Construir el objeto con los datos a enviar
+    const data = {
+      email: email,
+      emailPaciente:  props.username,
+      fecha: fechas,
+    };
+    console.log("la data es")
+    console.log(data)
+
+    // Realizar la llamada POST de Axios
+    axios.post("http://localhost:4000/", data)
+      .then((response) => {
+        // Manejar la respuesta exitosa
+        console.log(response.data);
+      })
+      .catch((error) => {
+        // Manejar el error
+        console.error(error);
+      });
+
+  setShowModal(false);
+};
 
   useEffect(() => {
     axios
@@ -208,7 +225,7 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
                 <Button
                   type="button"
                   className="btn btn-default"
-                  onClick={closeModal}
+                  onClick={() => confirmar(modalData.fecha)}
                   style={{
                     backgroundColor: "#4376b1",
                     color: "#fff",
