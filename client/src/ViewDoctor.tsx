@@ -37,7 +37,7 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
             console.log(err);
             });
         }
-        getPatients();
+        //getPatients();
     },[]);
 
     function handleAtencion(e:any, item:any){
