@@ -5,6 +5,9 @@ const router = express.Router();
 
 // Obtener todos los médicos
 router.get('/', doctorController.getDoctors);
+// Ruta para obtener doctores por especialidad y centro
+router.get('/doctors', doctorController.getDoctorBySpecialityAndCenter);
+
 
 // Obtener un médico por ID
 router.get('/:id', doctorController.getDoctorById);
@@ -18,7 +21,5 @@ router.post('/:id/availability', doctorController.updateAvailability);
 // Obtener calendario de un médico
 router.get('/:id/calendar', doctorController.getDoctorCalendarById);
 
-// Ruta para obtener doctores por especialidad y centro
-router.get('/doctors', doctorController.getDoctorsBySpecialityAndCenter);
 
 module.exports = router;

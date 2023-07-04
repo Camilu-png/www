@@ -12,19 +12,16 @@ exports.getDoctors = async (req, res) => {
   }
 };
 // Obtener doctores por especialidad y centro
-exports.getDoctorsBySpecialityAndCenter = async (req, res) => {
-  const { speciality, center } = req.params;
-  console.log(speciality, center)
+exports.getDoctorBySpecialityAndCenter = async (req, res) => {
+  const { speciality, center } = req.query;
 
   try {
-    const doctors = await Doctor.find({
-      speciality: speciality,
-      center: center,
-    }).select('_id rut speciality center availability');
+    const doctors = await Doctor.find({ speciality: speciality, center:center });
 
-    res.status(200).json(doctors);
+    res.json(doctors);
   } catch (error) {
-    res.status(500).json({ error: 'Error al obtener los doctores' });
+    console.error('Error al obtener los médicos por especialidad y centro:', error);
+    res.status(500).json({ error: 'Error al obtener los médicos por especialidad y centro' });
   }
 };
 // Obtener un médico por ID
