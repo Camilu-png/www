@@ -8,6 +8,7 @@ import "./ElegirMedico.css";
 interface Medico {
   nombre: string;
   direccion: string;
+  id: Object;
 }
 function ViewElegirMedico(props: {
   setLogout: any;
@@ -38,7 +39,7 @@ function ViewElegirMedico(props: {
         // Aquí puedes manejar la respuesta de la consulta
         console.log(res.data);
         const medicosData = res.data.map((item:any )=> ({
-          nombre: item.email, direccion: item.center
+          nombre: item.email, direccion: item.center, id:item._id
         }))
             setMedicos(medicosData);
             console.log(medicosData)
@@ -124,9 +125,13 @@ function ViewElegirMedico(props: {
             medicos.map((item, index) => (
               <li key={index}>
                 <div className="centro">{item.nombre}</div>
-                <a href="#" className="icono buscar">
-                  <i className="fas fa-search"></i>
-                </a>
+                <Nav.Link
+                  className="icono buscar"
+                  as={Link}
+                  to={`/MostrarHoras?id=${item.id}&email=${item.nombre}`} 
+                >
+                  Ver médicos
+                </Nav.Link>
               </li>
             ))
           ) : (
