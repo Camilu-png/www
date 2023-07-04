@@ -9,7 +9,8 @@ const UserRouter = require("./controllers/User");
 //const DoctorRouter = require("./controllers/Doctor");
 const SecretaryRouter = require("./controllers/Secretary");
 const DoctorRouter = require("./routes/doctorRoutes");
-const SpecialityRouter = require("./routes/specialityRoutes")
+const SpecialityRouter = require("./routes/specialityRoutes");
+const agendaRouter = require("./routes/agendaRoutes");
 const cors = require("cors");
 const { isLoggedIn } = require("./controllers/middleware");
 
@@ -21,11 +22,15 @@ app.use(
     credentials: true,
   })
 );
+
+app.use(express.json())
 app.use("/user", UserRouter);
 //app.use("/doctor", DoctorRouter);
 app.use("/secretary", SecretaryRouter);
 app.use("/doctor", DoctorRouter);
 app.use("/speciality", SpecialityRouter);
+app.use("/agenda", agendaRouter);
+
 
 app.use(
   "/graphql",

@@ -13,6 +13,9 @@ const patientSchema = new Schema({
     type: String,
     required: true,
   },
+  agendaId:[{
+    type:String
+  }]
 });
 
 module.exports = model("Patient", patientSchema);

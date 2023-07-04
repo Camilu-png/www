@@ -1,9 +1,9 @@
 const { Schema, model, mongoose } = require("mongoose");
 
 const doctorSchema = new Schema({
-  rut: {
+  email:{
     type: String,
-    required: true,
+    required: true
   },
   speciality: {
     type: String,
@@ -23,7 +23,11 @@ const doctorSchema = new Schema({
     availability: [{
       startTime: String,
       endTime: String,
-    }]
+    }],
+    free:{
+      type: Boolean,
+      default: true
+    },
   }],
   agendaId: [{
     type: String,
