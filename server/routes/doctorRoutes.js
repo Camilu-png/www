@@ -21,5 +21,10 @@ router.post('/:id/availability', doctorController.updateAvailability);
 // Obtener calendario de un médico
 router.get('/:id/calendar', doctorController.getDoctorCalendarById);
 
+// Obtener pacientes en espera
+router.get('/:id/pacientes-sin-atender', doctorController.getPacientesSinAtender);
+
+router.get('/:userId/obtener-id-doc', doctorController.getDoctorIdByUserId);
+
 
 module.exports = router;

@@ -9,21 +9,36 @@ function EsperaDoctor(props: { setLogout: any; setScreen: any,user: any }) {
         "hora": "9:30",
         "attended": false,
     }]);
-    const [doctor, setDoctor] = useState(props.user);
 
+    const [doctor, setDoctor] = useState(props.user);
+    const [doctor_id, setDoctor_id] = useState("");
+    console.log(doctor_id);
     useEffect(() => {
+
+        const getdoctorid = async() => {
+            await axios
+            .get(`http://localhost:4000/doctor/${doctor._id}/obtener-id-doc`)
+            .then((res) => {
+                setDoctor_id(res.data.doctorId);
+            })
+            .catch((err) => {
+                console.log(err);
+            })
+        } 
+        getdoctorid();
+
         const getPatients = async() =>{
             await axios
-            .post("http://localhost:4000/doctor/patients", doctor)
+            .get(`http://localhost:4000/doctor/${doctor_id}/pacientes-sin-atender`)
             .then((res) => {
-            
+                console.log(res.data.results);
             })
             .catch((err) => {
             console.log(err);
             });
         }
         getPatients();
-    });
+    },[]);
 
     function handleAtencion(e:any, item:any){
         const obj ={

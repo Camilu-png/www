@@ -12,6 +12,10 @@ const agendaSchema = new Schema({
     date: {
         type: String,
         required: true
+    },
+    atencion:{
+        type: Boolean,
+        default: false
     }
 
 });

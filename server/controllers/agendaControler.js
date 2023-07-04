@@ -40,6 +40,7 @@ exports.createAgenda = async (req, res) => {
         email_paciente,
         email_doctor,
         date,
+        atencion: false
       });
   
       await newAgenda.save();
