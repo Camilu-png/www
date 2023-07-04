@@ -1,6 +1,9 @@
 const Doctor = require('../models/Doctor');
 const jwt = require("jsonwebtoken");
 const SECRET = process.env.SECRET || "secret";
+const Agenda = require('../models/Agenda');
+const Patient = require('../models/Patient');
+const User = require('../models/User');
 // Obtener todos los médicos
 exports.getDoctors = async (req, res) => {
   try {
@@ -93,44 +96,56 @@ exports.updateAvailability = async (req, res) => {
   }
 };
 
-// Tomar una hora disponible del doctor
-exports.takeAppointment = async (req, res) => {
-  const { doctorId, appointmentTime } = req.body;
+exports.getPacientesSinAtender = async (req, res) => {
+  const { id } = req.params;
 
   try {
-    // Buscar al doctor por su ID
-    const doctor = await Doctor.findById(doctorId);
+    const doctor = await Doctor.findById(id);
 
     if (!doctor) {
-      return res.status(404).json({ error: 'No se encontró al doctor' });
+      return res.status(404).json({ error: 'Médico no encontrado' });
     }
 
-    // Verificar si la hora está disponible
-    const appointment = doctor.availability.find(
-      (availability) => availability.startTime === appointmentTime && availability.free === true
-    );
+    const agendasSinAtender = await Agenda.find({ _id: { $in: doctor.agendaId }, atencion: false, email_paciente: { $exists: true } });
+    const pacientesSinAtender = [];
 
-    if (!appointment) {
-      return res.status(400).json({ error: 'La hora no está disponible' });
+    for (const agenda of agendasSinAtender) {
+      const paciente = await Patient.findOne({ email: agenda.email_paciente });
+      if (paciente) {
+        pacientesSinAtender.push({
+          paciente,
+          horario: agenda.date,
+        });
+      }
     }
 
-    // Crear una nueva entrada en Agendas
-    const agendaEntry = new Agenda({
-      doctor: doctorId,
-      appointmentTime: appointmentTime,
-      patient: req.user._id, // suponiendo que tienes un sistema de autenticación y obtienes el ID del paciente
-    });
-
-    // Guardar la nueva entrada en Agendas
-    await agendaEntry.save();
-
-    // Actualizar la disponibilidad del doctor
-    appointment.free = false;
-    await doctor.save();
-
-    res.status(200).json({ message: 'Hora tomada exitosamente' });
+    res.json(pacientesSinAtender);
   } catch (error) {
-    res.status(500).json({ error: 'Error al tomar la hora' });
+    console.error('Error al obtener los pacientes sin atender:', error);
+    res.status(500).json({ error: 'Error al obtener los pacientes sin atender' });
+  }
+};
+
+exports.getDoctorIdByUserId = async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ error: 'Usuario no encontrado' });
+    }
+
+    const doctor = await Doctor.findOne({ email: user.email });
+
+    if (!doctor) {
+      return res.status(404).json({ error: 'Doctor no encontrado' });
+    }
+
+    res.json({ doctorId: doctor._id });
+  } catch (error) {
+    console.error('Error al obtener el ID del doctor:', error);
+    res.status(500).json({ error: 'Error al obtener el ID del doctor' });
   }
 };
 
