@@ -1,17 +1,56 @@
-import React, { useState } from "react";
+import React, { useEffect,useState } from "react";
+import { useLocation } from 'react-router-dom';
+import axios from "axios";
 import "./ElegirMedico.css";
 
+
+
+interface Medico {
+  nombre: string;
+  direccion: string;
+}
 function ViewElegirMedico(props: {
   setLogout: any;
   setScreen: any;
   username: string;
 }) {
-  const [lista, setLista] = useState([
-    { nombre: "Nombre Apellido Médico 1", direccion: "1asdad" },
-    { nombre: "Nombre Apellido Médico 2", direccion: "2" },
-    { nombre: "Nombre Apellido Médico 3", direccion: "3" },
-    // Agrega más elementos de la lista según tus necesidades
-  ]);
+  const [medicos, setMedicos] = useState<Medico[]>([]);
+  console.log("El medico es:")
+  console.log(medicos)
+
+  const location = useLocation();
+  const searchParams = new URLSearchParams(location.search);
+  const especialidad = searchParams.get('especialidad');
+  const centro = searchParams.get('centro') ?? '';
+  console.log(centro)
+  console.log(especialidad)
+
+  useEffect(() => {
+    const getDoctors = async (speciality: string | null, center: string | null) => {
+      try {
+        const res = await axios.get('http://localhost:4000/doctor', {
+          params: {
+            speciality: speciality,
+            center: center,
+          },
+        });
+
+        // Aquí puedes manejar la respuesta de la consulta
+        console.log(res.data);
+        const medicosData = res.data.map((item:any )=> ({
+          nombre: item.email, direccion: item.center
+        }))
+            setMedicos(medicosData);
+            console.log(medicosData)
+      } catch (error) {
+        // Aquí puedes manejar los errores de la consulta
+        console.log(error);
+      }
+    };
+
+    getDoctors(especialidad, centro);
+  }, [especialidad, centro]);
+
   return (
     <html lang="en">
       <head>
@@ -81,16 +120,21 @@ function ViewElegirMedico(props: {
           </h2>
           {/* Primer elemento del acordeón */}
           <ul className="lista">
-            {lista.map((item, index) => (
+          {medicos.length > 0 ? (
+            medicos.map((item, index) => (
               <li key={index}>
                 <div className="centro">{item.nombre}</div>
-                <div className="direccion">{item.direccion}</div>
                 <a href="#" className="icono buscar">
                   <i className="fas fa-search"></i>
                 </a>
               </li>
-            ))}
-          </ul>
+            ))
+          ) : (
+            <li>
+              <div className="centro">No hay médicos disponibles</div>
+            </li>
+          )}
+        </ul>
         </div>
 
         <script>
