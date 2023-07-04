@@ -91,6 +91,36 @@ exports.getDoctorCalendarById = async (req, res) => {
     }
   };
 
+  exports.getPacientesSinAtender = async (req, res) => {
+    const { id } = req.params;
+  
+    try {
+      const doctor = await Doctor.findById(id);
+  
+      if (!doctor) {
+        return res.status(404).json({ error: 'Médico no encontrado' });
+      }
+  
+      const agendasSinAtender = await Agenda.find({ _id: { $in: doctor.agendaId }, atencion: false, email_paciente: { $exists: true } });
+      const pacientesSinAtender = [];
+  
+      for (const agenda of agendasSinAtender) {
+        const paciente = await Patient.findOne({ email: agenda.email_paciente });
+        if (paciente) {
+          pacientesSinAtender.push({
+            paciente,
+            horario: agenda.date,
+          });
+        }
+      }
+  
+      res.json(pacientesSinAtender);
+    } catch (error) {
+      console.error('Error al obtener los pacientes sin atender:', error);
+      res.status(500).json({ error: 'Error al obtener los pacientes sin atender' });
+    }
+  };
+
 // Crear un nuevo médico
 exports.createDoctor = async (req, res) => {
   const { rut, speciality, center, availability } = req.body;

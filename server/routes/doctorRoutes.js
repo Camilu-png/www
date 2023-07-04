@@ -24,7 +24,7 @@ router.get('/:id/calendar', doctorController.getDoctorCalendarById);
 // Obtener pacientes en espera
 router.get('/:id/pacientes-sin-atender', doctorController.getPacientesSinAtender);
 
-router.get('/:userId/obtener-id-doc', doctorController.getDoctorIdByUserId);
+//router.get('/:userId/obtener-id-doc', doctorController.getDoctorIdByUserId);
 
 
 module.exports = router;
