@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import { Outlet, Link } from "react-router-dom";
-import {Container, Nav, Navbar} from 'react-bootstrap';
+import { Link } from "react-router-dom";
+import { Nav } from "react-bootstrap";
+import { useEffect } from "react";
 import axios from "axios";
 import "./TomarHora.css";
-
-
-
 
 interface Especialidad {
   especialidad: string;
@@ -15,7 +13,6 @@ interface Especialidad {
   }[];
 }
 
-
 function ViewTomarHora(props: {
   setLogout: any;
   setScreen: any;
@@ -23,27 +20,27 @@ function ViewTomarHora(props: {
 }) {
   const [especialidades, setEspecialidades] = useState<Especialidad[]>([]);
   useEffect(() => {
-    const getPatients = async() =>{
-        await axios
+    const getPatients = async () => {
+      await axios
         .get("http://localhost:4000/speciality")
         .then((res) => {
-           const especialidadesData = res.data.map((item: any) => ({
-          especialidad: item.name,
-          elementos: item.centro.map((centro: any) => ({
-            centro: centro.name,
-            direccion: centro.dir
-          }))
-        }));
-            setEspecialidades(especialidadesData);
-            console.log(especialidadesData)
+          const especialidadesData = res.data.map((item: any) => ({
+            especialidad: item.name,
+            elementos: item.centro.map((centro: any) => ({
+              centro: centro.name,
+              direccion: centro.dir,
+            })),
+          }));
+          setEspecialidades(especialidadesData);
+          console.log(especialidadesData);
         })
         .catch((err) => {
-        console.log(err);
+          console.log(err);
         });
-    }
+    };
     getPatients();
-},[]);
-  
+  }, []);
+
   const [activeAccordion, setActiveAccordion] = useState<number | null>(null);
 
   const toggleAccordion = (index: number) => {
@@ -91,7 +88,11 @@ function ViewTomarHora(props: {
                   <li key={subIndex}>
                     <div className="centro">{elemento.centro}</div>
                     <div className="direccion">{elemento.direccion}</div>
-                    <Nav.Link className="icono buscar" as={Link} to="/ElegirMedico"></Nav.Link>
+                    <Nav.Link
+                      className="icono buscar"
+                      as={Link}
+                      to="/ElegirMedico"
+                    ></Nav.Link>
                   </li>
                 ))}
               </ul>

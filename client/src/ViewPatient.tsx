@@ -102,7 +102,7 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
           </main>
 
           <main className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <h4>Paciente {user.name} </h4>
+            <h4>Paciente: {user.name} </h4>
             <h4>Rut: {user.rut}</h4>
 
             <table className="table table-responsive{-sm|-md|-lg|-xl}">
