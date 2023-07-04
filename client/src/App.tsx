@@ -11,6 +11,7 @@ import Espera from "./Espera";
 import ViewTomarHora from "./ViewTomarHora";
 import DoctorForm from "./components/DoctorForm";
 import ViewHorasReservadas from "./ViewHorasReservadas";
+import ViewSeleccionarHora from "./ViewSeleccionarHora";
 import ViewElegirMedico from "./ViewElegirMedico";
 
 function Login(props: {
@@ -186,6 +187,16 @@ function App() {
                   path="ElegirMedico"
                   element={
                     <ViewElegirMedico
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
+                <Route
+                  path="MostrarHoras"
+                  element={
+                    <ViewSeleccionarHora
                       setLogout={setLogout}
                       setScreen={setScreen}
                       username={username}
