@@ -1,68 +1,44 @@
-require("dotenv").config();
-const { Router } = require("express");
-const User = require("../models/User");
-const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
-const bodyParser = require("body-parser");
+require('dotenv').config();
+const { Router } = require('express');
+const User = require('../models/User');
+const bcrypt = require('bcryptjs');
+const jwt = require('jsonwebtoken');
+const bodyParser = require('body-parser');
 
 const router = Router();
-const SECRET = process.env.SECRET || "secret";
-
-/* User.create({
-  name: "admin",
-  password: "admin",
-  email: "admin@email.com",
-  type: "admin",
-});
-
-User.create({
-  name: "zimi",
-  password: "zimi",
-  email: "zimi@email.com",
-  type: "doctor",
-}); */
-
-/* User.create({
-  name: "pepito",
-  password: "pepito",
-  email: "pepito@email.com",
-  type: "patient",
-}); */
-
-/* User.create({
-  name: "juanita",
-  password: "juanita",
-  email: "juanita@email.com",
-  type: "secretary",
-});  */
+const SECRET = process.env.SECRET || 'secret';
 
 router.use(bodyParser.json());
 
-router.post("/signup", async (req, res) => {
+router.post('/signup', async (req, res) => {
   try {
-    res.json(await User.create(req.body));
+    const { name, email, password, type } = req.body;
+    const hashedPassword = await bcrypt.hash(password, 10);
+    const user = await User.create({ name, email, password: hashedPassword, type });
+    res.json({ message: 'User created successfully', user });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).json({ error: error.message });
   }
 });
 
-router.post("/login", async (req, res) => {
+router.post('/login', async (req, res) => {
   try {
-    const user = await User.findOne({ email: req.body.username });
-    console.log(user)
-    if (user) {
-      const result = req.body.password === user.password;
-      if (result) {
-        const token = await jwt.sign({ username: user.username }, SECRET);
-        res.json({ token:token, user:user });
-      } else {
-        res.status(400).json({ error: "password doesn't match" });
-      }
-    } else {
-      res.status(400).json({ error: "User doesn't exist" });
+    const { username, password } = req.body;
+    const user = await User.findOne({ email: username });
+
+    if (!user) {
+      return res.status(400).json({ error: 'User does not exist' });
     }
+
+    const isValidPassword = await bcrypt.compare(password, user.password);
+    if (!isValidPassword) {
+      return res.status(400).json({ error: 'Password does not match' });
+    }
+
+    const token = jwt.sign({ username: user.username, type: user.type }, SECRET, { expiresIn: '24h' });
+    res.json({ token, user });
   } catch (error) {
-    res.status(400).json({ error });
+    res.status(400).json({ error: error.message });
   }
 });
 

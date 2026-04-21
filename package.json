@@ -1,24 +1,13 @@
 {
-  "name": "backend",
+  "name": "clinic-app",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Medical Clinic Management System",
   "scripts": {
-    "client": "npm run start --workspace client",
-    "server": "npm run start --workspace server",
-    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
-    "webpack": "webpack --mode development --watch"
+    "install:all": "npm install && cd server && npm install && cd ../client && npm install",
+    "dev:server": "cd server && npm start",
+    "dev:client": "cd client && npm start"
   },
-  "keywords": [],
+  "keywords": ["medical", "clinic", "management"],
   "author": "",
-  "license": "ISC",
-  "workspaces": [
-    "./*"
-  ],
-  "dependencies": {
-    "babel": "^6.23.0",
-    "concurrently": "^8.2.0",
-    "webpack": "^5.88.1",
-    "webpack-cli": "^5.1.4"
-  }
+  "license": "ISC"
 }
