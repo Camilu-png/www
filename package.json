@@ -1,0 +1,24 @@
+{
+  "name": "backend",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "client": "npm run start --workspace client",
+    "server": "npm run start --workspace server",
+    "start": "concurrently --kill-others-on-fail \"npm run server\" \"npm run client\"",
+    "webpack": "webpack --mode development --watch"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "workspaces": [
+    "./*"
+  ],
+  "dependencies": {
+    "babel": "^6.23.0",
+    "concurrently": "^8.2.0",
+    "webpack": "^5.88.1",
+    "webpack-cli": "^5.1.4"
+  }
+}

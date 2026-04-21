@@ -1,225 +1,243 @@
-import {
-  AuthBindings,
-  Authenticated,
-  GitHubBanner,
-  Refine,
-} from "@refinedev/core";
-import { RefineKbar, RefineKbarProvider } from "@refinedev/kbar";
+import React, { useEffect, useState } from "react";
+import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
+import axios from "axios";
+import "bootstrap/dist/css/bootstrap.css";
+import "./App.css";
+import ViewSecretary from "./ViewSecretary";
+import ViewDoctor from "./ViewDoctor";
+import ViewPatient from "./ViewPatient";
+import Navbar from "./NavBar";
+import Espera from "./Espera";
+import ViewTomarHora from "./ViewTomarHora";
+import DoctorForm from "./components/DoctorForm";
+import ViewHorasReservadas from "./ViewHorasReservadas";
+import ViewSeleccionarHora from "./ViewSeleccionarHora";
+import ViewElegirMedico from "./ViewElegirMedico";
 
-import {
-  ErrorComponent,
-  notificationProvider,
-  RefineSnackbarProvider,
-  ThemedLayoutV2,
-} from "@refinedev/mui";
+function Login(props: {
+  username: string;
+  password: string;
+  setScreen: any;
+  setUsername: any;
+  setPassword: any;
+  user: any;
+  setUser: any;
+}) {
+  const [login, setLogin] = useState(false);
 
-import CssBaseline from "@mui/material/CssBaseline";
-import GlobalStyles from "@mui/material/GlobalStyles";
-import routerBindings, {
-  CatchAllNavigate,
-  DocumentTitleHandler,
-  NavigateToResource,
-  UnsavedChangesNotifier,
-} from "@refinedev/react-router-v6";
-import dataProvider from "@refinedev/simple-rest";
-import axios, { AxiosRequestConfig } from "axios";
-import { CredentialResponse } from "interfaces/google";
-import {
-  BlogPostCreate,
-  BlogPostEdit,
-  BlogPostList,
-  BlogPostShow,
-} from "pages/blog-posts";
-import {
-  CategoryCreate,
-  CategoryEdit,
-  CategoryList,
-  CategoryShow,
-} from "pages/categories";
-import { Login } from "pages/login";
-import { BrowserRouter, Outlet, Route, Routes } from "react-router-dom";
-import { parseJwt } from "utils/parse-jwt";
-import { Header } from "./components/header";
-import { ColorModeContextProvider } from "./contexts/color-mode";
-
-const axiosInstance = axios.create();
-axiosInstance.interceptors.request.use((request: AxiosRequestConfig) => {
-  const token = localStorage.getItem("token");
-  if (request.headers) {
-    request.headers["Authorization"] = `Bearer ${token}`;
-  } else {
-    request.headers = {
-      Authorization: `Bearer ${token}`,
-    };
-  }
-
-  return request;
-});
-
-function App() {
-  const authProvider: AuthBindings = {
-    login: async ({ credential }: CredentialResponse) => {
-      const profileObj = credential ? parseJwt(credential) : null;
-
-      if (profileObj) {
-        localStorage.setItem(
-          "user",
-          JSON.stringify({
-            ...profileObj,
-            avatar: profileObj.picture,
-          })
-        );
-
-        localStorage.setItem("token", `${credential}`);
-
-        return {
-          success: true,
-          redirectTo: "/",
-        };
-      }
-
-      return {
-        success: false,
+  useEffect(() => {
+    const auth = async () => {
+      const data = {
+        username: props.username,
+        password: props.password,
       };
-    },
-    logout: async () => {
-      const token = localStorage.getItem("token");
-
-      if (token && typeof window !== "undefined") {
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        axios.defaults.headers.common = {};
-        window.google?.accounts.id.revoke(token, () => {
-          return {};
+      await axios
+        .post("http://localhost:4000/user/login", data)
+        .then((res) => {
+          axios.defaults.headers.common[
+            "Authorization"
+          ] = `Bearer ${res.data.token}`;
+          props.setScreen("view");
+          props.setUser(res.data.user);
+        })
+        .catch((err) => {
+          console.log(err);
         });
-      }
-
-      return {
-        success: true,
-        redirectTo: "/login",
-      };
-    },
-    onError: async (error) => {
-      console.error(error);
-      return { error };
-    },
-    check: async () => {
-      const token = localStorage.getItem("token");
-
-      if (token) {
-        return {
-          authenticated: true,
-        };
-      }
-
-      return {
-        authenticated: false,
-        error: {
-          message: "Check failed",
-          name: "Token not found",
-        },
-        logout: true,
-        redirectTo: "/login",
-      };
-    },
-    getPermissions: async () => null,
-    getIdentity: async () => {
-      const user = localStorage.getItem("user");
-      if (user) {
-        return JSON.parse(user);
-      }
-
-      return null;
-    },
-  };
+    };
+    if (login) {
+      auth();
+    }
+  }, [login, props]);
 
   return (
-    <BrowserRouter>
-      <GitHubBanner />
-      <RefineKbarProvider>
-        <ColorModeContextProvider>
-          <CssBaseline />
-          <GlobalStyles styles={{ html: { WebkitFontSmoothing: "auto" } }} />
-          <RefineSnackbarProvider>
-            <Refine
-              dataProvider={dataProvider("https://api.fake-rest.refine.dev")}
-              notificationProvider={notificationProvider}
-              routerProvider={routerBindings}
-              authProvider={authProvider}
-              resources={[
-                {
-                  name: "blog_posts",
-                  list: "/blog-posts",
-                  create: "/blog-posts/create",
-                  edit: "/blog-posts/edit/:id",
-                  show: "/blog-posts/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
-                {
-                  name: "categories",
-                  list: "/categories",
-                  create: "/categories/create",
-                  edit: "/categories/edit/:id",
-                  show: "/categories/show/:id",
-                  meta: {
-                    canDelete: true,
-                  },
-                },
-              ]}
-              options={{
-                syncWithLocation: true,
-                warnWhenUnsavedChanges: true,
-              }}
+    <div className="col-12 d-flex justify-content-center">
+      <div className="col-5 p-5 d-flex flex-column">
+        <form
+          data-np-autofill-type="identity"
+          data-np-checked="1"
+          data-np-watching="1"
+        >
+          <fieldset>
+            <legend>Ingrese sus datos</legend>
+            <div className="form-group">
+              <input
+                type="email"
+                className="form-control"
+                id="exampleInputEmail1"
+                aria-describedby="emailHelp"
+                placeholder="Email"
+                data-np-autofill-type="email"
+                data-np-uid="f6e19877-88d4-450a-be5b-b6d4028c3d86"
+                onChange={(e) => props.setUsername(e.target.value)}
+              />
+            </div>
+            <br />
+            <div className="form-group">
+              <input
+                type="password"
+                className="form-control"
+                id="exampleInputPassword1"
+                placeholder="Password"
+                onChange={(e) => props.setPassword(e.target.value)}
+              />
+            </div>
+          </fieldset>
+        </form>
+        <br />
+        <div className="d-flex flex-column justify-content-center">
+          <div className="d-flex justify-content-center">
+            <button
+              type="button"
+              className="btn btn-primary w-70 p-3"
+              onClick={() => setLogin(true)}
             >
-              <Routes>
-                <Route
-                  element={
-                    <Authenticated fallback={<CatchAllNavigate to="/login" />}>
-                      <ThemedLayoutV2 Header={() => <Header isSticky={true} />}>
-                        <Outlet />
-                      </ThemedLayoutV2>
-                    </Authenticated>
-                  }
-                >
-                  <Route
-                    index
-                    element={<NavigateToResource resource="blog_posts" />}
-                  />
-                  <Route path="/blog-posts">
-                    <Route index element={<BlogPostList />} />
-                    <Route path="create" element={<BlogPostCreate />} />
-                    <Route path="edit/:id" element={<BlogPostEdit />} />
-                    <Route path="show/:id" element={<BlogPostShow />} />
-                  </Route>
-                  <Route path="/categories">
-                    <Route index element={<CategoryList />} />
-                    <Route path="create" element={<CategoryCreate />} />
-                    <Route path="edit/:id" element={<CategoryEdit />} />
-                    <Route path="show/:id" element={<CategoryShow />} />
-                  </Route>
-                  <Route path="*" element={<ErrorComponent />} />
-                </Route>
-                <Route
-                  element={
-                    <Authenticated fallback={<Outlet />}>
-                      <NavigateToResource />
-                    </Authenticated>
-                  }
-                >
-                  <Route path="/login" element={<Login />} />
-                </Route>
-              </Routes>
+              Iniciar sesión
+            </button>
+          </div>
+          <div className="d-flex justify-content-center">
+            <button type="button" className="btn btn-primary w-70 p-3">
+              Registrar
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
-              <RefineKbar />
-              <UnsavedChangesNotifier />
-              <DocumentTitleHandler />
-            </Refine>
-          </RefineSnackbarProvider>
-        </ColorModeContextProvider>
-      </RefineKbarProvider>
-    </BrowserRouter>
+function View(props: {
+  screen: string;
+  setScreen: any;
+  user: any;
+  setUser: any;
+}) {
+  return (
+    <>
+      {props.user.type === "doctor" ? (
+        <BrowserRouter>
+          <Navigate to="/esperaDoctor" />
+        </BrowserRouter>
+      ) : props.user.type === "patient" ? (
+        <BrowserRouter>
+          <Navigate to="/Tomarhoras" />
+        </BrowserRouter>
+      ) : (
+        <BrowserRouter>
+          <Navigate to="/esperaSecretaria" />
+        </BrowserRouter>
+      )}
+    </>
+  );
+}
+
+function App() {
+  const [username, setUsername] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [screen, setScreen] = React.useState("auth");
+  const [user, setUser] = useState({});
+  const [logout, setLogout] = useState(false);
+
+  return (
+    <div className="App">
+      {screen === "auth" ? (
+        <Login
+          username={username}
+          password={password}
+          setScreen={setScreen}
+          setUsername={setUsername}
+          setPassword={setPassword}
+          user={user}
+          setUser={setUser}
+        />
+      ) : (
+        <div>
+          <View
+            screen={screen}
+            setScreen={setScreen}
+            user={user}
+            setUser={setUser}
+          />
+          {/* Cambiar componentes Esperar por los que correspondan */}
+          <BrowserRouter>
+            <Routes>
+              <Route path="/" element={<Navbar type={user} />}>
+                {/* Rutas Doctor */}
+                <Route
+                  path="esperaDoctor"
+                  element={
+                    <ViewDoctor
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      user={user}
+                    />
+                  }
+                />
+                {/* Rutas Paciente */}
+                <Route
+                  path="Tomarhoras"
+                  element={
+                    <ViewTomarHora
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
+                <Route
+                  path="ElegirMedico"
+                  element={
+                    <ViewElegirMedico
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
+                <Route
+                  path="MostrarHoras"
+                  element={
+                    <ViewSeleccionarHora
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
+                <Route
+                  path="HorasReservadas"
+                  element={
+                    <ViewPatient
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      username={username}
+                    />
+                  }
+                />
+                {/* Rutas Secretaria */}
+                <Route
+                  path="esperaSecretaria"
+                  element={
+                    <ViewSecretary
+                      setLogout={setLogout}
+                      setScreen={setScreen}
+                      user={user}
+                    />
+                  }
+                />
+                <Route path="disponibilidad" element={<DoctorForm />} />
+                <Route
+                  path="HorasSecretaria"
+                  element={<ViewHorasReservadas />}
+                />
+                <Route path="recaudacion" element={<Espera />} />
+
+                <Route path="*" element={<Navigate replace to="/" />} />
+              </Route>
+            </Routes>
+          </BrowserRouter>
+        </div>
+      )}
+    </div>
   );
 }
 
