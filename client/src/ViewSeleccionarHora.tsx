@@ -1,17 +1,7 @@
 import React, { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom';
-import { Button, Modal } from "react-bootstrap";
-
-import "./ViewPatient.css";
+import { Modal } from "react-bootstrap";
+import "./ViewSeleccionarHora.css";
 import axios from "axios";
-
-declare global {
-  interface Window {
-    bootstrap: any;
-  }
-}
-
-
 
 interface Hora {
   fecha: string;
@@ -21,98 +11,40 @@ interface Hora {
   }[];
 }
 
-
-
-function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
-  const location = useLocation();
-  const searchParams = new URLSearchParams(location.search);
-  const idMedico = searchParams.get('id') ?? '';
-  const email = searchParams.get('email') ?? '';
-  const [horasDisponibles, setHora] = useState<Hora[]>([]);
-
-
-
-  useEffect(() => {
-    const getDoctorCalendar = async (idMedico: string | null) => {
-      try {
-        const res = await axios.get(`http://localhost:4000/doctor/${idMedico}/calendar`);
-        console.log(res.data)
-        const horasData = res.data
-        .filter((item: any) => item.free === true)
-        .map((item: any) => ({
-          fecha: item.date,
-          bloques: item.availability.map((bloque: any) => ({
-            inicio: bloque.startTime,
-            fin: bloque.endTime
-          }))
-        }));
-
-
-
-        // Aquí puedes manejar la respuesta de la consulta
-        setHora(horasData);
-      } catch (error) {
-        // Aquí puedes manejar los errores de la consulta
-        console.log(error);
-      }
-    };
-
-    getDoctorCalendar( idMedico);
-  }, [idMedico]);
-
-
-
-
-
-
+function ViewSeleccionarHora(props: { setLogout: any; setScreen: any; username: any }) {
+  const idMedico = new URLSearchParams(window.location.search).get('id') ?? '';
+  const email = new URLSearchParams(window.location.search).get('email') ?? '';
+  const [horasDisponibles, setHoras] = useState<Hora[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [user, setUser] = useState({ name: "", rut: "" });
   const [modalData, setModalData] = useState<{
     fecha: string;
-    bloques: {
-      inicio: string;
-      fin: string;
-    };
+    bloques: { inicio: string; fin: string };
   }>({
     fecha: "",
-    bloques: {
-      inicio: "",
-      fin: "",
-    },
-    
+    bloques: { inicio: "", fin: "" },
   });
 
-  const openModal = (data: typeof modalData) => {
-    setModalData(data);
-    setShowModal(true);
-  };
-
-  const closeModal = () => {
-    setShowModal(false);
-  };
-  const confirmar = (fechas: string) => {
-    // Construir el objeto con los datos a enviar
-    const data = {
-      email_paciente:  props.username,
-      email_doctor: email,
-      date: fechas,
-    };
-    console.log("la data es")
-    console.log(data)
-
-    // Realizar la llamada POST de Axios
-    axios.post("http://localhost:4000/agenda", data)
-      .then((response) => {
-        // Manejar la respuesta exitosa
-        console.log(response.data);
-      })
-      .catch((error) => {
-        // Manejar el error
+  useEffect(() => {
+    const getDoctorCalendar = async () => {
+      try {
+        const res = await axios.get(`http://localhost:4000/doctor/${idMedico}/calendar`);
+        const horasData = res.data
+          .filter((item: any) => item.free === true)
+          .map((item: any) => ({
+            fecha: item.date,
+            bloques: item.availability.map((bloque: any) => ({
+              inicio: bloque.startTime,
+              fin: bloque.endTime
+            }))
+          }));
+        setHoras(horasData);
+      } catch (error) {
         console.error(error);
-      });
-
-  setShowModal(false);
-};
+      }
+    };
+    getDoctorCalendar();
+  }, [idMedico]);
 
   useEffect(() => {
     axios
@@ -125,127 +57,128 @@ function ViewPatient(props: { setLogout: any; setScreen: any; username: any }) {
         }`,
       })
       .then((res) => {
-        console.log(res.data.data);
         setUser({
           name: res.data.data.patientByEmail.name,
           rut: res.data.data.patientByEmail.rut,
         });
       })
       .catch((err) => {
-        console.log(err);
+        console.error(err);
       });
-  }, [setUser]);
+  }, [props.username]);
+
+  const openModal = (data: typeof modalData) => {
+    setModalData(data);
+    setShowModal(true);
+  };
+
+  const closeModal = () => {
+    setShowModal(false);
+  };
+
+  const confirmar = (fecha: string) => {
+    const data = {
+      email_paciente: props.username,
+      email_doctor: email,
+      date: fecha,
+    };
+    axios.post("http://localhost:4000/agenda", data)
+      .then((response) => {
+        console.log(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+    setShowModal(false);
+  };
 
   return (
-    <>
-      <nav className="navbar navbar-light sticky-top bg-light flex-md-nowrap p-0 shadow">
-        <Button
-          className="navbar-toggler position-absolute d-md-none collapsed"
-          type="button"
-          data-toggle="collapse"
-          data-target="#sidebarMenu"
-          aria-controls="sidebarMenu"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon"></span>
-        </Button>
-      </nav>
+    <div className="schedule-container">
+      <header className="schedule-header">
+        <h1 className="schedule-title">Seleccionar hora</h1>
+        <p className="schedule-subtitle">Elige el horario disponible</p>
+      </header>
 
-      <div className="container-fluid">
-        <div className="row">
-          <main className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <div className="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-              <h1 className="h2">Seleccione una hora</h1>
-            </div>
-          </main>
-
-          <main className="col-md-9 ml-sm-auto col-lg-10 px-md-4">
-            <h4>Paciente {user.name} </h4>
-            <h4>Rut: {user.rut}</h4>
-
-            <table className="table table-responsive{-sm|-md|-lg|-xl}">
-              <thead className="table align-middle">
-                <tr>
-                  <th scope="col">Fecha</th>
-                  <th scope="col">Hora Inicio</th>
-                  <th scope="col">Hora Fin</th>
-                  <th scope="col">Agendar</th>
-                </tr>
-              </thead>
-              <tbody>
-                {horasDisponibles.map((dato, index) => (
-                  <tr role="row" key={index}>
-                    <td>{dato.fecha}</td>
-                    <td>{dato.bloques[0].inicio}</td>
-                    <td>{dato.bloques[0].fin}</td>
-                    <td>
-                      <Button
-                        className="btn-susses"
-                        data-toggle="modal"
-                        data-target="#exampleModal"
-                        onClick={() => openModal({
-                          fecha: dato.fecha,
-                          bloques: dato.bloques[0]
-                        })}
-                      >
-                        Agendar Hora
-                      </Button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-
-            {/* Modal */}
-            <Modal show={showModal} onHide={closeModal}>
-              <Modal.Header closeButton>
-                <Modal.Title>Agendar la siguiente hora</Modal.Title>
-              </Modal.Header>
-              <Modal.Body>
-                <p>Hora Inicio: {modalData.bloques.inicio}</p>
-                <p>Hora Fin: {modalData.bloques.fin}</p>
-                <p>Fecha: {modalData.fecha}</p>
-              </Modal.Body>
-              <Modal.Footer
-                style={{ justifyContent: "space-around", borderTop: 0 }}
-              >
-                <Button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={closeModal}
-                  style={{
-                    backgroundColor: "#ff3939",
-                    color: "#fff",
-                    borderRadius: "15px",
-                  }}
-                >
-                  Cancelar
-                </Button>
-                <Button
-                  type="button"
-                  className="btn btn-default"
-                  onClick={() => confirmar(modalData.fecha)}
-                  style={{
-                    backgroundColor: "#4376b1",
-                    color: "#fff",
-                    borderRadius: "15px",
-                  }}
-                >
-                  Confirmar
-                </Button>
-              </Modal.Footer>
-            </Modal>
-          </main>
+      <div className="appointments-user-info">
+        <div>
+          <div className="appointments-user-label">Paciente</div>
+          <div className="appointments-user-value">{user.name}</div>
+        </div>
+        <div>
+          <div className="appointments-user-label">RUT</div>
+          <div className="appointments-user-value">{user.rut}</div>
         </div>
       </div>
-      <script>
-        {`
-    console.log("Hola mundo");
-  `}
-      </script>
-    </>
+
+      <div className="schedule-table-wrapper">
+        <table className="schedule-table">
+          <thead>
+            <tr>
+              <th>Fecha</th>
+              <th>Hora Inicio</th>
+              <th>Hora Fin</th>
+              <th>Agendar</th>
+            </tr>
+          </thead>
+          <tbody>
+            {horasDisponibles.map((dato, index) => (
+              <tr key={index}>
+                <td className="schedule-date">{dato.fecha}</td>
+                <td>{dato.bloques[0].inicio}</td>
+                <td>{dato.bloques[0].fin}</td>
+                <td>
+                  <button
+                    className="schedule-action-btn"
+                    onClick={() => openModal({
+                      fecha: dato.fecha,
+                      bloques: dato.bloques[0]
+                    })}
+                  >
+                    Agendar
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <Modal show={showModal} onHide={closeModal} centered>
+        <div className="modal-content-custom">
+          <div className="modal-header-custom">
+            <h3 className="modal-title-custom">Confirmar hora</h3>
+            <button className="modal-close-custom" onClick={closeModal}>
+              <svg viewBox="0 0 24 24" width="20" height="20">
+                <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" fill="currentColor"/>
+              </svg>
+            </button>
+          </div>
+          <div className="modal-body-custom">
+            <div className="modal-detail">
+              <span className="modal-detail-label">Fecha</span>
+              <span className="modal-detail-value">{modalData.fecha}</span>
+            </div>
+            <div className="modal-detail">
+              <span className="modal-detail-label">Hora inicio</span>
+              <span className="modal-detail-value">{modalData.bloques.inicio}</span>
+            </div>
+            <div className="modal-detail">
+              <span className="modal-detail-label">Hora fin</span>
+              <span className="modal-detail-value">{modalData.bloques.fin}</span>
+            </div>
+          </div>
+          <div className="modal-footer-custom">
+            <button className="btn-modal-cancel" onClick={closeModal}>
+              Cancelar
+            </button>
+            <button className="btn-modal-confirm" onClick={() => confirmar(modalData.fecha)}>
+              Confirmar
+            </button>
+          </div>
+        </div>
+      </Modal>
+    </div>
   );
 }
 
-export default ViewPatient;
+export default ViewSeleccionarHora;

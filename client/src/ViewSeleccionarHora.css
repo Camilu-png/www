@@ -1,31 +1,37 @@
-.doctor-container {
+.schedule-container {
   min-height: calc(100vh - 100px);
 }
 
-.doctor-header {
+.schedule-header {
   margin-bottom: var(--space-xl);
 }
 
-.doctor-title {
+.schedule-title {
   font-family: var(--font-display);
   font-size: 2rem;
-  color: var(--color-primary);
-  margin-bottom: 0;
+  color: var(--color-text);
+  margin-bottom: var(--space-xs);
 }
 
-.doctor-table-wrapper {
+.schedule-subtitle {
+  color: var(--color-text-secondary);
+  font-size: 1rem;
+  margin: 0;
+}
+
+.schedule-table-wrapper {
   background: var(--color-surface);
   border: 1px solid var(--color-border-light);
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
 
-.doctor-table {
+.schedule-table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.doctor-table th {
+.schedule-table th {
   padding: var(--space-md) var(--space-lg);
   text-align: left;
   font-size: 0.75rem;
@@ -37,28 +43,28 @@
   border-bottom: 1px solid var(--color-border-light);
 }
 
-.doctor-table td {
+.schedule-table td {
   padding: var(--space-md) var(--space-lg);
   border-bottom: 1px solid var(--color-border-light);
   font-size: 0.9375rem;
   color: var(--color-text);
-  vertical-align: middle;
 }
 
-.doctor-table tr:last-child td {
+.schedule-table tr:last-child td {
   border-bottom: none;
 }
 
-.doctor-table tr:hover {
+.schedule-table tr:hover {
   background: var(--color-bg-subtle);
 }
 
-.doctor-patient-name {
+.schedule-date {
   font-weight: 500;
+  color: var(--color-primary);
 }
 
-.doctor-attend-btn {
-  padding: var(--space-sm) var(--space-lg);
+.schedule-action-btn {
+  padding: var(--space-sm) var(--space-md);
   font-size: 0.875rem;
   font-weight: 500;
   color: white;
@@ -69,22 +75,17 @@
   transition: all var(--transition-fast);
 }
 
-.doctor-attend-btn:hover {
+.schedule-action-btn:hover {
   opacity: 0.9;
 }
 
-.doctor-attend-btn.attended {
-  background: var(--color-text-muted);
-  cursor: default;
-}
-
 @media (min-width: 768px) {
-  .doctor-title {
+  .schedule-title {
     font-size: 2.25rem;
   }
   
-  .doctor-table th,
-  .doctor-table td {
+  .schedule-table th,
+  .schedule-table td {
     padding: var(--space-md) var(--space-xl);
   }
 }
