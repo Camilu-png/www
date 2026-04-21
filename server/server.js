@@ -10,7 +10,7 @@ const UserRouter = require('./controllers/User');
 const SecretaryRouter = require('./controllers/Secretary');
 const DoctorRouter = require('./routes/doctorRoutes');
 const SpecialityRouter = require('./routes/specialityRoutes');
-const agendaRouter = require('./routes/agendaRoutes');
+const AgendaController = require('./controllers/agendaController');
 const cors = require('cors');
 const { isLoggedIn } = require('./controllers/middleware');
 
@@ -29,7 +29,7 @@ const startServer = async () => {
   app.use('/secretary', SecretaryRouter);
   app.use('/doctor', DoctorRouter);
   app.use('/speciality', SpecialityRouter);
-  app.use('/agenda', agendaRouter);
+  app.use('/agenda', AgendaController);
 
   app.use('/graphql', graphqlHTTP({
     schema,

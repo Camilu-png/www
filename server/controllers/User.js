@@ -36,7 +36,30 @@ router.post('/login', async (req, res) => {
     }
 
     const token = jwt.sign({ username: user.username, type: user.type }, SECRET, { expiresIn: '24h' });
-    res.json({ token, user });
+    res.json({
+      token,
+      user: {
+        name: user.name,
+        email: user.email,
+        type: user.type
+      }
+    });
+  } catch (error) {
+    res.status(400).json({ error: error.message });
+  }
+});
+
+router.get('/:email', async (req, res) => {
+  try {
+    const user = await User.findOne({ email: req.params.email });
+    if (!user) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+    res.json({
+      name: user.name,
+      email: user.email,
+      type: user.type
+    });
   } catch (error) {
     res.status(400).json({ error: error.message });
   }
