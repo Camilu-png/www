@@ -24,6 +24,9 @@ router.get('/:id/calendar', doctorController.getDoctorCalendarById);
 // Obtener pacientes en espera
 router.get('/:id/pacientes-sin-atender', doctorController.getPacientesSinAtender);
 
+// Marcar paciente como atendido
+router.put('/patientAttended', doctorController.patientAttended);
+
 //router.get('/:userId/obtener-id-doc', doctorController.getDoctorIdByUserId);
 
 
