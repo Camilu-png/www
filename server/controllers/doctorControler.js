@@ -8,26 +8,25 @@ const SECRET = process.env.SECRET || "secret";
 exports.getDoctors = async (req, res) => {
   try {
     let doctors = await Doctor.find();
+    const doctorEmails = doctors.map(d => d.email);
+    const users = await User.find({ email: { $in: doctorEmails } });
+    const userMap = {};
+    users.forEach(u => { userMap[u.email] = u; });
 
-    doctors = await Promise.all(
-      doctors.map(async (doctor) => {
-        const infoDoctor = await User.find({
-          email: doctor.email,
-        });
-
-        return {
-          id: doctor._id,
-          email: doctor.email,
-          speciality: doctor.speciality,
-          center: doctor.center,
-          availability: doctor.availability,
-          calendar: doctor.calendar,
-          agendaId: doctor.agendaId,
-          name: infoDoctor[0].name,
-          type: infoDoctor[0].type,
-        };
-      }),
-    );
+    doctors = doctors.map((doctor) => {
+      const infoDoctor = userMap[doctor.email] || {};
+      return {
+        id: doctor._id,
+        email: doctor.email,
+        speciality: doctor.speciality,
+        center: doctor.center,
+        availability: doctor.availability,
+        calendar: doctor.calendar,
+        agendaId: doctor.agendaId,
+        name: infoDoctor.name,
+        type: infoDoctor.type,
+      };
+    });
     res.json(doctors);
   } catch (error) {
     console.error("Error al obtener los médicos:", error);
@@ -122,17 +121,22 @@ exports.getPacientesSinAtender = async (req, res) => {
       atencion: false,
       email_paciente: { $exists: true },
     });
-    const pacientesSinAtender = [];
 
-    for (const agenda of agendasSinAtender) {
-      const paciente = await Patient.findOne({ email: agenda.email_paciente });
+    const patientEmails = agendasSinAtender.map(a => a.email_paciente);
+    const pacientes = await Patient.find({ email: { $in: patientEmails } });
+    const patientMap = {};
+    pacientes.forEach(p => { patientMap[p.email] = p; });
+
+    const pacientesSinAtender = agendasSinAtender.map(agenda => {
+      const paciente = patientMap[agenda.email_paciente];
       if (paciente) {
-        pacientesSinAtender.push({
+        return {
           paciente,
           horario: agenda.date,
-        });
+        };
       }
-    }
+      return null;
+    }).filter(Boolean);
 
     res.json(pacientesSinAtender);
   } catch (error) {

@@ -31,10 +31,9 @@ const startServer = async () => {
   app.use('/speciality', SpecialityRouter);
   app.use('/agenda', AgendaController);
 
-  app.use('/graphql', graphqlHTTP({
+  app.use('/graphql', isLoggedIn, graphqlHTTP({
     schema,
     graphiql: true,
-    use: [isLoggedIn],
   }));
 
   app.use(morgan('dev'));

@@ -8,11 +8,38 @@ const bodyParser = require('body-parser');
 const router = Router();
 const SECRET = process.env.SECRET || 'secret';
 
+const validateEmail = (email) => {
+  const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  return re.test(email);
+};
+
+const validatePassword = (password) => {
+  return password && password.length >= 6;
+};
+
 router.use(bodyParser.json());
 
 router.post('/signup', async (req, res) => {
   try {
     const { name, email, password, type } = req.body;
+
+    if (!name || !email || !password || !type) {
+      return res.status(400).json({ error: 'All fields are required' });
+    }
+
+    if (!validateEmail(email)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
+    if (!validatePassword(password)) {
+      return res.status(400).json({ error: 'Password must be at least 6 characters' });
+    }
+
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
+      return res.status(400).json({ error: 'Email already registered' });
+    }
+
     const hashedPassword = await bcrypt.hash(password, 10);
     const user = await User.create({ name, email, password: hashedPassword, type });
     res.json({ message: 'User created successfully', user });
@@ -24,6 +51,15 @@ router.post('/signup', async (req, res) => {
 router.post('/login', async (req, res) => {
   try {
     const { username, password } = req.body;
+
+    if (!username || !password) {
+      return res.status(400).json({ error: 'Email and password are required' });
+    }
+
+    if (!validateEmail(username)) {
+      return res.status(400).json({ error: 'Invalid email format' });
+    }
+
     const user = await User.findOne({ email: username });
 
     if (!user) {

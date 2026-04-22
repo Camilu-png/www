@@ -6,13 +6,21 @@ const {
   GraphQLBoolean,
 } = require("graphql");
 
+const CentroType = new GraphQLObjectType({
+  name: "CentroType",
+  description: "Center information",
+  fields: {
+    name_center: { type: GraphQLString },
+    dir: { type: GraphQLString },
+  },
+});
+
 const UserType = new GraphQLObjectType({
   name: "UserType",
   description: "The user type",
   fields: {
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    password: { type: GraphQLString },
     email: { type: GraphQLString },
     type: { type: GraphQLString },
   },
@@ -24,7 +32,6 @@ const PatientType = new GraphQLObjectType({
   fields: {
     id: { type: GraphQLID },
     name: { type: GraphQLString },
-    password: { type: GraphQLString },
     rut: { type: GraphQLString },
     email: { type: GraphQLString },
   },
@@ -37,15 +44,7 @@ const SecretaryType = new GraphQLObjectType({
     id: { type: GraphQLID },
     rut: { type: GraphQLString },
     email: { type: GraphQLString },
-    center: {
-      type: new GraphQLObjectType({
-        name: "CentroType",
-        fields: {
-          name_center: { type: GraphQLString },
-          dir: { type: GraphQLString },
-        },
-      }),
-    },
+    center: { type: CentroType },
   },
 });
 
@@ -57,15 +56,7 @@ const DoctorType = new GraphQLObjectType({
     rut: { type: GraphQLString },
     speciality: { type: GraphQLString },
     email: { type: GraphQLString },
-    center: {
-      type: new GraphQLObjectType({
-        name: "CentroType",
-        fields: {
-          name_center: { type: GraphQLString },
-          dir: { type: GraphQLString },
-        },
-      }),
-    },
+    center: { type: CentroType },
     agendaId: { type: GraphQLString },
   },
 });
