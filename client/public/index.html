@@ -12,14 +12,42 @@
     <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
     <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
     <title>Centro Médico Galenos</title>
-    <style>
-      html { --bg-color: #ffffff; }
-      @media (prefers-color-scheme: dark) { html { --bg-color: #1a1a1a; } }
-      body { background-color: var(--bg-color); }
-      #root { background-color: var(--bg-color); }
-      .webpack-dev-server-client-overlay { display: none !important; visibility: hidden !important; opacity: 0 !important; pointer-events: none !important; }
-      div[style*="z-index: 2147483647"] { display: none !important; }
-    </style>
+    <script>
+      (function() {
+        var removed = false;
+        function removeOverlay() {
+          if (removed) return;
+          var overlay = document.querySelector('.webpack-dev-server-client-overlay');
+          if (overlay) {
+            overlay.style.display = 'none';
+            overlay.style.visibility = 'hidden';
+            overlay.style.opacity = '0';
+            overlay.innerHTML = '';
+            removed = true;
+            return;
+          }
+          var allDivs = document.querySelectorAll('div');
+          for (var i = 0; i < allDivs.length; i++) {
+            var div = allDivs[i];
+            var style = window.getComputedStyle(div);
+            if (style.zIndex === '2147483647' || (div.innerText && div.innerText.includes('ResizeObserver'))) {
+              div.style.display = 'none';
+              div.style.visibility = 'hidden';
+              removed = true;
+            }
+          }
+        }
+        var observer = new MutationObserver(removeOverlay);
+        if (document.body) {
+          observer.observe(document.body, { childList: true, subtree: true });
+        }
+        window.addEventListener('load', function() {
+          observer.disconnect();
+          setInterval(removeOverlay, 50);
+        });
+        setInterval(removeOverlay, 50);
+      })();
+    </script>
   </head>
   <body>
     <noscript>You need to enable JavaScript to run this app.</noscript>
